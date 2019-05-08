@@ -66,7 +66,7 @@ isPmOrAdmin = (req, res, next) => {
     console.log(req.userId);
     User.findOne({
         where: {id: req.userId},
-        attributes: ['firstname', 'username', 'email'],
+        attributes: ['id', 'firstname', 'username', 'email'],
         include: [{
             model: Role,
             attributes: ['id', 'name'],
@@ -75,9 +75,12 @@ isPmOrAdmin = (req, res, next) => {
             }
         }]})
         .then(user => {
+
+            console.log(user);
+
             user.getRoles().then(roles => {
                 for(let i=0; i<roles.length; i++){
-                    if(roles[i].name.toUpperCase() === "PM"){
+                    if(roles[i].name.toUpperCase() === "USER"){
                         next();
                         return;
                     }
