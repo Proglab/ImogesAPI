@@ -1,5 +1,5 @@
 const db = require('../config/db.config.js');
-const config = require('../config/config.js');
+const config = require('../config/configApp.js');
 const ROLEs = config.ROLEs;
 const User = db.users;
 const Role = db.role;
