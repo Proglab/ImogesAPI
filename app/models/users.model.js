@@ -70,12 +70,7 @@ module.exports = function (sequelize, Sequelize) {
         },
         {
             timestamp: true,
-            logging: console.log,
-            classMethods: {
-                associate: function(models) {
-
-                }
-            }
+            logging: console.log
         });
     return Users;
 };

@@ -133,9 +133,5 @@ module.exports = function (sequelize, DataTypes) {
             logging: console.log
         });
 
-    Realties.associate = function (models) {
-        Realties.belongsTo(models.Projects);
-    };
-
     return Realties;
 };

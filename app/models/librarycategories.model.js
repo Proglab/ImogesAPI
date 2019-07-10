@@ -15,9 +15,5 @@ module.exports = function (sequelize, DataTypes) {
         }
     });
 
-    Librarycategories.associate = function (models) {
-        Librarycategories.hasMany(models.Libraries);
-    };
-
     return Librarycategories;
 };

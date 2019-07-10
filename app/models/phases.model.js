@@ -16,8 +16,5 @@ module.exports = function (sequelize, DataTypes) {
             timestamp: true,
             logging: console.log
         });
-    Phases.associate = function (models) {
-        Phases.belongsToMany (models.Projects, {through: 'project_phases', foreignKey: 'phase_id'});
-    };
     return Phases;
 };

@@ -30,10 +30,5 @@ module.exports = function (sequelize, DataTypes) {
             logging: console.log
         });
 
-    Libraries.associate = function (models) {
-        Libraries.belongsTo(models.Librarycategories);
-        Libraries.belongsTo(models.Users);
-    };
-
     return Libraries;
 };
