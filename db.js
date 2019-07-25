@@ -1,13 +1,13 @@
 const db = require('./app/config/db.config.js');
 
 const Role = db.role;
-
+/*
 db.sequelize.sync({force: true}).then(() => {
     console.log('Drop and Resync with { force: true }');
     initial();
 
 });
-
+*/
 
 
 function initial(){
