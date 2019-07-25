@@ -10,16 +10,6 @@ module.exports = function (sequelize, DataTypes) {
                     }
                 }
             },
-            realty_project_id: {
-                type: DataTypes.INTEGER
-            },
-            realty_contract_type: {
-                type: DataTypes.INTEGER,
-                defaultValue: 0
-            },
-            realty_type: {
-                type: DataTypes.STRING(8)
-            },
             realty_facades_number:{
                 type: DataTypes.INTEGER
             },
@@ -55,7 +45,7 @@ module.exports = function (sequelize, DataTypes) {
             },
             realty_status: {
                 type: DataTypes.INTEGER,
-                defaultValue: 0
+                defaultValue: 0 // 0 - libre; 1 - compromis; - 2 acte;
             },
             realty_availability: {
                 type: DataTypes.DATE

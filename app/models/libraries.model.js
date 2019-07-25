@@ -9,6 +9,9 @@ module.exports = function (sequelize, DataTypes) {
             library_media_extension: {
                 type: DataTypes.STRING(5)
             },
+            library_media_param:{
+                type: DataTypes.STRING(100)
+            },
             library_media_order: {
                 type: DataTypes.INTEGER
             },

@@ -1,6 +1,6 @@
 const db = require('../config/db.config.js');
 const Users = db.users;
-var bcrypt = require('bcryptjs');
+const bcrypt = require('bcryptjs');
 
 // Post a Customer
 exports.create = (req, res) => {

@@ -14,9 +14,6 @@ module.exports = function (sequelize, DataTypes) {
             project_ref:{
                 type: DataTypes.TEXT
             },
-            project_type: {
-                type: DataTypes.INTEGER
-            },
             project_facade_number: {
                 type: DataTypes.INTEGER
             },
@@ -53,8 +50,11 @@ module.exports = function (sequelize, DataTypes) {
             project_pc: {
                 type: DataTypes.TEXT
             },
-            project_country: {
+            project_state: {
                 type: DataTypes.TEXT
+            },
+            project_country: {
+                type: DataTypes.STRING(2)
             },
             project_active_online: {
                 type: DataTypes.BOOLEAN,

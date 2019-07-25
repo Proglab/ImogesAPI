@@ -2,11 +2,9 @@ const db = require('../config/db.config.js');
 const config = require('../config/configApp.js');
 const User = db.users;
 const Role = db.role;
-
 const Op = db.Sequelize.Op;
-
-var jwt = require('jsonwebtoken');
-var bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 
 exports.signup = (req, res) => {
     // Save User to Database

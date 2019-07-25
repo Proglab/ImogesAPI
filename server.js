@@ -4,6 +4,7 @@ const db = require('./db');
 
 require('./app/route/users.route.js')(app);
 require('./app/route/auth.route.js')(app);
+require('./app/route/realties.route.js')(app);
 
 const server = app.listen(port, function() {
 
