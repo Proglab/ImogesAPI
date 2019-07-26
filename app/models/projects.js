@@ -143,7 +143,6 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     timestamp: true,
     logging: console.log,
-    //request.include = {model: LibraryCategories, required: false};
     defaultScope: {
       where: {
         project_start_diffusion_date: {

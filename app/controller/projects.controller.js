@@ -1,17 +1,13 @@
 
 const db = require('../models');
-const config = require('../config/configApp.js');
 const Projects = db.projects;
-const LibraryCategories = db.librarycategories
-const Sequelize = require('sequelize');
-const Op = Sequelize.Op;
 
 exports.getAll = (req, res) => {
     console.log('getAll');
     let projects = Projects;
     if(req.query){
         if(req.query.active) projects = projects.scope('active');
-        if(req.query.limit) projects = projects.scope({method: ['limit', Number(req.query.limit, 0)]});
+        if(req.query.limit) projects = projects.scope({method: ['limit', Number(0, req.query.limit)]});
         if(req.query.order){
             switch (req.query.order){
                 case "id":
