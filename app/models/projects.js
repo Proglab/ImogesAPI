@@ -166,6 +166,12 @@ module.exports = (sequelize, DataTypes) => {
             [Op.lt]: Date.now()
           }
         }
+      },
+      withMedia: {
+        include: {
+          model: sequelize.models.librarycategories,
+          required: false
+        }
       }
     }
   });

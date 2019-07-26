@@ -13,6 +13,7 @@ exports.getAll = (req, res) => {
             scope.push({method: ['order', req.query.order_field, order]});
         }
         if(req.query.diffused) scope.push('diffused');
+        if(req.query.media) scope.push('withMedia');
     }
     // request.where.project_start_diffusion_date = {[Op.lt]: new Date()};
     Projects.scope(scope).findAll().then(projects => {
