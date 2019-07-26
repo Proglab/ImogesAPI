@@ -8,15 +8,9 @@ exports.getAll = (req, res) => {
     if(req.query){
         if(req.query.active) projects = projects.scope('active');
         if(req.query.limit) projects = projects.scope({method: ['limit', Number(0, req.query.limit)]});
-        if(req.query.order){
-            switch (req.query.order){
-                case "id":
-                    projects = projects.scope({method: ['order', 'id', 'DESC']});
-                break;
-                case "buildDate":
-                    projects = projects.scope({method: ['order', 'project_start_build_date', 'DESC']});
-                break;
-            }
+        if(req.query.order_field) {
+            if(!req.query.order_direction) req.query.order_direction = 'DESC';
+            projects = projects.scope({method: ['order', req.query.order_field, req.query.order_direction]});
         }
         if(req.query.diffused) projects = projects.scope('diffused');
     }
