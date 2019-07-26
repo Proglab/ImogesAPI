@@ -4,27 +4,37 @@ const Projects = db.projects;
 
 exports.getAll = (req, res) => {
     console.log('getAll');
-    let projects = Projects;
+    let scope = [];
     if(req.query){
-        if(req.query.active) projects = projects.scope('active');
-        if(req.query.limit) projects = projects.scope({method: ['limit', Number(0, req.query.limit)]});
+        if(req.query.active) scope.push('active');
+        if(req.query.limit) scope.push({method: ['limit', 0, Number(req.query.limit)]});
         if(req.query.order_field) {
-            if(!req.query.order_direction) req.query.order_direction = 'DESC';
-            projects = projects.scope({method: ['order', req.query.order_field, req.query.order_direction]});
+            let order = !req.query.order_direction ? 'DESC' : req.query.order_direction;
+            scope.push({method: ['order', req.query.order_field, order]});
         }
-        if(req.query.diffused) projects = projects.scope('diffused');
+        if(req.query.diffused) scope.push('diffused');
     }
     // request.where.project_start_diffusion_date = {[Op.lt]: new Date()};
-    projects.findAll().then(projects => {
+    Projects.scope(scope).findAll().then(projects => {
         res.status(200).json({
             "description": "projects list",
             "projects": projects
         });
     }).catch(err => {
-        res.status(500).json({
-            "description": "Can not access",
-            "error": err
-        });
+        if (err.name === 'SequelizeDatabaseError')
+        {
+            res.status(500).json({
+                "description": err.parent.sqlMessage,
+                "error": err
+            });
+        }
+        else
+        {
+            res.status(500).json({
+                "description": "Can not access",
+                "error": err
+            });
+        }
     });
 };
 
