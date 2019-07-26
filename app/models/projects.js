@@ -1,4 +1,7 @@
 'use strict';
+
+const Op = require('sequelize').Op;
+
 module.exports = (sequelize, DataTypes) => {
   const projects = sequelize.define('projects', {
     project_title: {
@@ -139,7 +142,33 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {
     timestamp: true,
-    logging: console.log
+    logging: console.log,
+    //request.include = {model: LibraryCategories, required: false};
+    defaultScope: {
+      where: {
+        project_start_diffusion_date: {
+          [Op.lt]: Date.now()
+        }
+      }
+    },
+    scopes: {
+      active:{
+        where: {
+          project_active_online: true
+        }
+      },
+      limit (offset, limit) {
+        return {
+          offset: offset,
+          limit: limit
+        }
+      },
+      order (field, order) {
+        return {
+          order: [[field, order]]
+        }
+      }
+    }
   });
   projects.associate = function(models) {
     models.projects.belongsToMany(models.phases, {through: 'project_phases', foreignKey: 'project_id'});

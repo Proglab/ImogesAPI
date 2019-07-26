@@ -8,25 +8,23 @@ const Op = Sequelize.Op;
 
 exports.getAll = (req, res) => {
     console.log('getAll');
-    let request = {};
+    let projects = Projects;
     if(req.query){
-        request = {where: {}};
-        if(req.query.active) request.where.project_active_online = req.query.active;
-        if(req.query.limit) request.limit = Number(req.query.limit);
+        if(req.query.active) projects = projects.scope('active');
+        if(req.query.limit) projects = projects.scope({method: ['limit', Number(req.query.limit)]});
         if(req.query.order){
             switch (req.query.order){
                 case "id":
-                    request.order = [['id', 'DESC']];
+                    projects = projects.scope({method: ['order', 'id', 'DESC']});
                 break;
                 case "buildDate":
-                    request.order = [['project_start_build_date', 'DESC']];
+                    projects = projects.scope({method: ['order', 'project_start_build_date', 'DESC']});
                 break;
             }
         }
-        request.include = {model: LibraryCategories, required: false};
     }
-    request.where.project_start_diffusion_date = {[Op.lt]: new Date()};
-    Projects.findAll(request).then(projects => {
+    // request.where.project_start_diffusion_date = {[Op.lt]: new Date()};
+    projects.findAll().then(projects => {
         res.status(200).json({
             "description": "projects list",
             "projects": projects
@@ -41,17 +39,14 @@ exports.getAll = (req, res) => {
 
 exports.getOne = (req, res) => {
     console.log('getOne');
-    let request = {};
+
+    let projects = Projects;
     if(req.query){
-        request = {where: {}};
-        if(req.query.active) request.where.project_active_online = req.query.active;
-        if(req.query.limit) request.limit = Number(req.query.limit);
+        if(req.query.active) projects.scope('active');
     }
-    request.where.project_start_diffusion_date = {[Op.lt]: new Date()};
-    request.order = [['id', 'DESC']];
-    Projects.findAll(request).then(projects => {
+    projects.findByPk(req.param('id')).then(projects => {
         res.status(200).json({
-            "description": "projects list",
+            "description": "get a project",
             "projects": projects
         });
     }).catch(err => {
