@@ -2,6 +2,7 @@
 const db = require('../models');
 const config = require('../config/configApp.js');
 const Projects = db.projects;
+const LibraryCategories = db.librarycategories
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 
@@ -22,6 +23,7 @@ exports.getAll = (req, res) => {
                 break;
             }
         }
+        request.include = {model: LibraryCategories, required: false};
     }
     request.where.project_start_diffusion_date = {[Op.lt]: new Date()};
     Projects.findAll(request).then(projects => {
