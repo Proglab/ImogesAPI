@@ -1,6 +1,6 @@
-const app = require('./app');
+const app = require('./app/app');
 const port = process.env.PORT || 4000;
-const db = require('./db');
+const db = require('./app/models');
 
 require('./app/route/users.route.js')(app);
 require('./app/route/auth.route.js')(app);
@@ -11,6 +11,8 @@ const server = app.listen(port, function() {
 
     const host = server.address().address;
     const port = server.address().port;
+
+    db.sequelize.sync();
 
     console.log(host);
     console.log(port);
