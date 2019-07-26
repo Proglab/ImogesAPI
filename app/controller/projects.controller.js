@@ -18,6 +18,7 @@ exports.getAll = (req, res) => {
                 break;
             }
         }
+        if(req.query.diffused) projects = projects.scope('diffused');
     }
     // request.where.project_start_diffusion_date = {[Op.lt]: new Date()};
     projects.findAll().then(projects => {

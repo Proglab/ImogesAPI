@@ -143,13 +143,6 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     timestamp: true,
     logging: console.log,
-    defaultScope: {
-      where: {
-        project_start_diffusion_date: {
-          [Op.lt]: Date.now()
-        }
-      }
-    },
     scopes: {
       active:{
         where: {
@@ -165,6 +158,13 @@ module.exports = (sequelize, DataTypes) => {
       order (field, order) {
         return {
           order: [[field, order]]
+        }
+      },
+      diffused: {
+        where: {
+          project_start_diffusion_date: {
+            [Op.lt]: Date.now()
+          }
         }
       }
     }
