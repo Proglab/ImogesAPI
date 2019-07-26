@@ -16,7 +16,12 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {
     timestamp: true,
-    logging: console.log
+    logging: console.log,
+    defaultScope: {
+      include: [
+        { model: sequelize.models.libraries }
+      ]
+    }
   });
   librarycategories.associate = function(models) {
     models.librarycategories.hasMany(models.libraries);

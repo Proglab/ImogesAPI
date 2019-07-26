@@ -130,14 +130,10 @@ module.exports = (sequelize, DataTypes) => {
     models.realties.belongsTo(models.realtytypes);
     models.realties.belongsTo(models.realtycontracttypes);
     models.realties.hasMany(models.librarycategories, {
+      foreignKey: 'library_category_table_id',
+      foreignKeyConstraint: false,
       scope: {
-        foreignKey: 'library_category_table_id',
-        scope: {
-          library_category_table_name: 'Realties',
-          order: [
-            ['library_category_order', 'ASC']
-          ]
-        }
+        library_category_table_name: 'Realties'
       }
     });
   };

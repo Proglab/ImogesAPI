@@ -146,11 +146,10 @@ module.exports = (sequelize, DataTypes) => {
     models.projects.hasMany(models.realties);
     models.projects.belongsTo(models.projecttypes);
     models.projects.hasMany(models.librarycategories, {
-        foreignKey: 'library_category_table_id',
-        scope: {
-          library_category_table_name: 'Projects',
-          order: [['library_category_order', 'ASC']
-        ]
+      foreignKey: 'library_category_table_id',
+      foreignKeyConstraint: false,
+      scope: {
+        library_category_table_name: 'Projects'
       }
     });
   };
