@@ -11,7 +11,7 @@ exports.getAll = (req, res) => {
     let projects = Projects;
     if(req.query){
         if(req.query.active) projects = projects.scope('active');
-        if(req.query.limit) projects = projects.scope({method: ['limit', Number(req.query.limit)]});
+        if(req.query.limit) projects = projects.scope({method: ['limit', Number(req.query.limit, 0)]});
         if(req.query.order){
             switch (req.query.order){
                 case "id":
