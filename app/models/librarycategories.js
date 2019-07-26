@@ -1,6 +1,6 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  const libraryvategories = sequelize.define('librarycategories', {
+  const librarycategories = sequelize.define('librarycategories', {
     library_category_label :{
       type: DataTypes.STRING(100)
     },
@@ -18,8 +18,8 @@ module.exports = (sequelize, DataTypes) => {
     timestamp: true,
     logging: console.log
   });
-  libraryvategories.associate = function(models) {
+  librarycategories.associate = function(models) {
     models.librarycategories.hasMany(models.libraries);
   };
-  return libraryvategories;
+  return librarycategories;
 };

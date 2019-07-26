@@ -145,6 +145,14 @@ module.exports = (sequelize, DataTypes) => {
     models.projects.belongsToMany(models.phases, {through: 'project_phases', foreignKey: 'project_id'});
     models.projects.hasMany(models.realties);
     models.projects.belongsTo(models.projecttypes);
+    models.projects.hasMany(models.librarycategories, {
+        foreignKey: 'library_category_table_id',
+        scope: {
+          library_category_table_name: 'Projects',
+          order: [['library_category_order', 'ASC']
+        ]
+      }
+    });
   };
   return projects;
 };
