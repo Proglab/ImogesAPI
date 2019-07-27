@@ -63,7 +63,8 @@
           "required": false,
           "description": "asc or desc",
           "type": "string",
-          "pattern": "^asc|desc$"
+          "enum": ["asc", "desc"],
+          "example": "asc"
         },
         {
           "name": "diffused",
@@ -103,7 +104,29 @@
           "required": true,
           "description": "ID of project that we want to find",
           "type": "string"
+        },
+        {
+          "name": "active",
+          "in": "query",
+          "required": false,
+          "description": "return only active project",
+          "type": "boolean"
+        },
+        {
+          "name": "diffused",
+          "in": "query",
+          "required": false,
+          "description": "get only the projects with the good defused date",
+          "type": "boolean"
+        },
+        {
+          "name": "media",
+          "in": "query",
+          "required": false,
+          "description": "get the media of the project in the response",
+          "type": "boolean"
         }
+
       ],
       "get": {
         "tags": [
