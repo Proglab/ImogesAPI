@@ -123,7 +123,7 @@
           "name": "media",
           "in": "query",
           "required": false,
-          "description": "get the media of the project in the response",
+          "description": "get the media in the response",
           "type": "boolean"
         }
 
@@ -159,7 +159,7 @@
       ],
       "properties": {
         "id": {
-          "type": "string",
+          "type": "integer",
           "uniqueItems": true
         },
         "project_title": {
@@ -170,43 +170,50 @@
           "type": "string"
         },
         "project_facade_number": {
-          "type": "integer"
+          "type": "number",
+          "format": "float"
         },
         "project_cadastral_income": {
-          "type": "decimal"
+          "type": "number",
+          "format": "float"
         },
         "project_charges": {
-          "type": "decimal"
+          "type": "number",
+          "format": "float"
         },
         "project_creation_date": {
-          "type": "datetime"
+          "type": "string",
+          "format": "date-time"
         },
         "project_start_build_date": {
-          "type": "datetime"
+          "type": "string",
+          "format": "date-time"
         },
         "project_start_diffusion_date": {
-          "type": "datetime"
+          "type": "string",
+          "format": "date-time"
         },
         "project_end_build_date": {
-          "type": "datetime"
+          "type": "string",
+          "format": "date-time"
         },
         "project_short_description": {
-          "type": "text"
+          "type": "string"
         },
         "project_long_description": {
-          "type": "text"
+          "type": "string"
         },
         "project_address": {
-          "type": "text"
+          "type": "string"
         },
         "project_city": {
-          "type": "text"
+          "type": "string"
         },
         "project_pc": {
-          "type": "text"
+          "type": "string"
         },
         "project_state": {
-          "type": "text"
+          "type": "string"
         },
         "project_country": {
           "type": "string"
@@ -257,10 +264,12 @@
           "type": "string"
         },
         "project_energy_consumption": {
-          "type": "decimal"
+          "type": "number",
+          "format": "float"
         },
         "project_CO2_emission": {
-          "type": "decimal"
+          "type": "number",
+          "format": "float"
         },
         "project_air_conditioning": {
           "type": "boolean"
@@ -284,19 +293,106 @@
           "type": "integer"
         },
         "createdAt": {
-          "type": "datetime"
+          "type": "string",
+          "format": "date-time"
         },
         "updatedAt": {
-          "type": "datetime"
+          "type": "string",
+          "format": "date-time"
         },
         "ProjecttypeId": {
           "type": "integer"
+        },
+        "librarycategories": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CategorieMedias"
+          }
         }
       }
     },
     "Projects": {
       "type": "array",
-      "$ref": "#/definitions/Project"
+      "items": {
+        "$ref": "#/definitions/Project"
+      }
+    },
+    "CategorieMedias": {
+      "id": {
+        "type": "integer",
+        "uniqueItems": true
+      },
+      "library_category_label": {
+        "type": "string"
+      },
+      "library_category_table_name": {
+        "type": "string"
+      },
+      "library_category_table_id": {
+        "type": "integer"
+      },
+      "library_category_order": {
+        "type": "integer"
+      },
+      "createdAt": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "updatedAt": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "libraries": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/Media"
+        }
+      }
+    },
+    "Media": {
+      "id": {
+        "type": "integer",
+        "uniqueItems": true
+      },
+      "library_media_name": {
+        "type": "string"
+      },
+      "library_media_type": {
+        "type": "string"
+      },
+      "library_media_extension": {
+        "type": "string"
+      },
+      "library_media_param": {
+        "type": "string"
+      },
+      "library_media_order": {
+        "type": "integer"
+      },
+      "library_media_size": {
+        "type": "number",
+        "format": "float"
+      },
+      "library_media_resource": {
+        "type": "string"
+      },
+      "library_media_url": {
+        "type": "string"
+      },
+      "library_media_hash": {
+        "type": "string"
+      },
+      "createdAt": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "updatedAt": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "userId": {
+        "type": "integer"
+      }
     }
   }
 }
