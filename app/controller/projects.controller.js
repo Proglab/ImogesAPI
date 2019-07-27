@@ -7,7 +7,11 @@ exports.getAll = (req, res) => {
     let scope = [];
     if(req.query){
         if(req.query.active) scope.push('active');
-        if(req.query.limit) scope.push({method: ['limit', 0, Number(req.query.limit)]});
+        if(req.query.limit)
+        {
+            if(!req.query.offset) req.query.offset = 0;
+            scope.push({method: ['limit', req.query.offset, Number(req.query.limit)]});
+        }
         if(req.query.order_field) {
             let order = !req.query.order_direction ? 'DESC' : req.query.order_direction;
             scope.push({method: ['order', req.query.order_field, order]});

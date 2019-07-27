@@ -1,0 +1,279 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Real Estate Manager API",
+    "description": "Application de gestion de projet immobilier",
+    "license": {
+      "name": "owner",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "host": "localhost:4000",
+  "basePath": "/api",
+  "tags": [
+    {
+      "name": "Projects",
+      "description": "API for projects in the system"
+    }
+  ],
+  "schemes": [
+    "http"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/projects": {
+      "parameters": [
+        {
+          "name": "active",
+          "in": "query",
+          "required": false,
+          "description": "return only active project",
+          "type": "boolean"
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "description": "limit the number of projects returned",
+          "type": "integer"
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "description": "begin the list of the projects by this index",
+          "type": "integer"
+        },
+        {
+          "name": "order_field",
+          "in": "query",
+          "required": false,
+          "description": "order the projects by field",
+          "type": "integer"
+        },
+        {
+          "name": "order_direction",
+          "in": "query",
+          "required": false,
+          "description": "asc or desc",
+          "type": "string",
+          "pattern": "^asc|desc$"
+        },
+        {
+          "name": "diffused",
+          "in": "query",
+          "required": false,
+          "description": "get only the projects with the good defused date",
+          "type": "boolean"
+        },
+        {
+          "name": "media",
+          "in": "query",
+          "required": false,
+          "description": "get the media of the project in the response",
+          "type": "boolean"
+        }
+      ],
+      "get": {
+        "tags": [
+          "Projects"
+        ],
+        "summary": "Get all projects in system",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ProjectsResponse"
+            }
+          }
+        }
+      }
+    },
+    "/projects/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "ID of project that we want to find",
+          "type": "string"
+        }
+      ],
+      "get": {
+        "tags": [
+          "Projects"
+        ],
+        "summary": "Get project with given ID",
+        "responses": {
+          "200": {
+            "description": "Project is found",
+            "schema": {
+              "$ref": "#/definitions/Project"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ProjectsResponse": {
+      "properties": {
+        "description": "string",
+        "projects": "#/definitions/Projects"
+      }
+    },
+    "Project": {
+      "required": [
+        "project_title",
+        "project_status",
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "uniqueItems": true
+        },
+        "project_title": {
+          "type": "string",
+          "uniqueItems": true
+        },
+        "project_ref": {
+          "type": "string"
+        },
+        "project_facade_number": {
+          "type": "integer"
+        },
+        "project_cadastral_income": {
+          "type": "decimal"
+        },
+        "project_charges": {
+          "type": "decimal"
+        },
+        "project_creation_date": {
+          "type": "datetime"
+        },
+        "project_start_build_date": {
+          "type": "datetime"
+        },
+        "project_start_diffusion_date": {
+          "type": "datetime"
+        },
+        "project_end_build_date": {
+          "type": "datetime"
+        },
+        "project_short_description": {
+          "type": "text"
+        },
+        "project_long_description": {
+          "type": "text"
+        },
+        "project_address": {
+          "type": "text"
+        },
+        "project_city": {
+          "type": "text"
+        },
+        "project_pc": {
+          "type": "text"
+        },
+        "project_state": {
+          "type": "text"
+        },
+        "project_country": {
+          "type": "string"
+        },
+        "project_active_online": {
+          "type": "boolean"
+        },
+        "project_actual_phase": {
+          "type": "integer"
+        },
+        "project_lat": {
+          "type": "string"
+        },
+        "project_long": {
+          "type": "string"
+        },
+        "project_status": {
+          "type": "integer"
+        },
+        "project_environment_type": {
+          "type": "string"
+        },
+        "project_terrain_size": {
+          "type": "integer"
+        },
+        "project_parking_in_number": {
+          "type": "integer"
+        },
+        "roject_parking_out_number": {
+          "type": "integer"
+        },
+        "project_floor_number": {
+          "type": "integer"
+        },
+        "project_handicapped_access": {
+          "type": "boolean"
+        },
+        "project_lift": {
+          "type": "boolean"
+        },
+        "project_concierge": {
+          "type": "boolean"
+        },
+        "project_peb": {
+          "type": "integer"
+        },
+        "project_heating_type": {
+          "type": "string"
+        },
+        "project_energy_consumption": {
+          "type": "decimal"
+        },
+        "project_CO2_emission": {
+          "type": "decimal"
+        },
+        "project_air_conditioning": {
+          "type": "boolean"
+        },
+        "project_heat_pump": {
+          "type": "boolean"
+        },
+        "project_double_glazing": {
+          "type": "boolean"
+        },
+        "project_PV": {
+          "type": "boolean"
+        },
+        "project_distance_schools": {
+          "type": "integer"
+        },
+        "project_distance_shops": {
+          "type": "integer"
+        },
+        "project_distance_transports": {
+          "type": "integer"
+        },
+        "createdAt": {
+          "type": "datetime"
+        },
+        "updatedAt": {
+          "type": "datetime"
+        },
+        "ProjecttypeId": {
+          "type": "integer"
+        }
+      }
+    },
+    "Projects": {
+      "type": "array",
+      "$ref": "#/definitions/Project"
+    }
+  }
+}
