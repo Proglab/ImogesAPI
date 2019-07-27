@@ -45,12 +45,14 @@ exports.getAll = (req, res) => {
 
 exports.getOne = (req, res) => {
     console.log('getOne');
-
-    let projects = Projects;
+    let scope = [];
     if(req.query){
-        if(req.query.active) projects.scope('active');
+        if(req.query.active) scope.push('active');
     }
-    projects.findByPk(req.param('id')).then(projects => {
+    if(req.query.diffused) scope.push('diffused');
+    if(req.query.media) scope.push('withMedia');
+
+    Projects.scope(scope).findByPk(req.param('id')).then(projects => {
         res.status(200).json({
             "description": "get a project",
             "projects": projects
