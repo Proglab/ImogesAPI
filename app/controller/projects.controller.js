@@ -52,10 +52,10 @@ exports.getOne = (req, res) => {
     if(req.query.diffused) scope.push('diffused');
     if(req.query.media) scope.push('withMedia');
 
-    Projects.scope(scope).findByPk(req.param('id')).then(projects => {
+    Projects.scope(scope).findByPk(req.params.id).then(project => {
         res.status(200).json({
             "description": "get a project",
-            "projects": projects
+            "project": project
         });
     }).catch(err => {
         res.status(500).json({
