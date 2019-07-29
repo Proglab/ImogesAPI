@@ -64,10 +64,6 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.BOOLEAN,
       defaultValue: 0
     },
-    project_actual_phase: {
-      type: DataTypes.INTEGER,
-      defaultValue: 0
-    },
     project_lat: {
       type: DataTypes.STRING,
       allowNull: true,
@@ -174,16 +170,14 @@ module.exports = (sequelize, DataTypes) => {
         }
       },
       withPhase: {
-        include: {
-          model: sequelize.models.phases,
-          required: false
-        }
+        include: ["current_phase", "phases"]
       }
     }
   });
   projects.associate = function(models) {
     models.projects.belongsToMany(models.phases, {through: 'project_phases', foreignKey: 'project_id'});
     models.projects.hasMany(models.realties);
+    models.projects.belongsTo(models.phases, {foreignKey: 'project_actual_phase', targetKey: 'id', as: 'current_phase'});
     models.projects.belongsTo(models.projecttypes);
     models.projects.hasMany(models.librarycategories, {
       foreignKey: 'library_category_table_id',
