@@ -1,5 +1,9 @@
 # imogesAPI
 
+## La doc
+
+http://localhost:4000/api-docs/
+
 ## Les migrations
 
 Pour executer les migrations, il faut se mettre dans le dossier app et executer  

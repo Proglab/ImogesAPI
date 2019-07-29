@@ -63,8 +63,7 @@
           "required": false,
           "description": "asc or desc",
           "type": "string",
-          "enum": ["asc", "desc"],
-          "example": "asc"
+          "enum": ["asc", "desc"]
         },
         {
           "name": "diffused",
@@ -149,6 +148,12 @@
       "properties": {
         "description": "string",
         "projects": "#/definitions/Projects"
+      }
+    },
+    "ProjectResponse": {
+      "properties": {
+        "description": "string",
+        "project": "#/definitions/Project"
       }
     },
     "Project": {
@@ -242,7 +247,7 @@
         "project_parking_in_number": {
           "type": "integer"
         },
-        "roject_parking_out_number": {
+        "project_parking_out_number": {
           "type": "integer"
         },
         "project_floor_number": {
