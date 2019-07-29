@@ -172,6 +172,12 @@ module.exports = (sequelize, DataTypes) => {
           model: sequelize.models.librarycategories,
           required: false
         }
+      },
+      withPhase: {
+        include: {
+          model: sequelize.models.phases,
+          required: false
+        }
       }
     }
   });

@@ -19,6 +19,9 @@ exports.getAll = (req, res) => {
         if(req.query.diffused) scope.push('diffused');
         if(req.query.media) scope.push('withMedia');
     }
+
+    scope.push('withPhase');
+
     // request.where.project_start_diffusion_date = {[Op.lt]: new Date()};
     Projects.scope(scope).findAll().then(projects => {
         res.status(200).json({
@@ -51,6 +54,7 @@ exports.getOne = (req, res) => {
     }
     if(req.query.diffused) scope.push('diffused');
     if(req.query.media) scope.push('withMedia');
+    scope.push('withPhase');
 
     Projects.scope(scope).findByPk(req.params.id).then(project => {
         res.status(200).json({
