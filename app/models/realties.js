@@ -158,6 +158,13 @@ module.exports = (sequelize, DataTypes) => {
         where: {
           star: true
         }
+      },
+      byProject (id) {
+        return {
+          where: {
+            projectId: id
+          }
+        }
       }
     }
   });
