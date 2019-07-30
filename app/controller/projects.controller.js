@@ -10,7 +10,7 @@ exports.getAll = (req, res) => {
         if(req.query.limit)
         {
             if(!req.query.offset) req.query.offset = 0;
-            scope.push({method: ['limit', req.query.offset, Number(req.query.limit)]});
+            scope.push({method: ['limit', Number(req.query.offset), Number(req.query.limit)]});
         }
         if(req.query.order_field) {
             let order = !req.query.order_direction ? 'DESC' : req.query.order_direction;
