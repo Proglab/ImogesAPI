@@ -8,16 +8,31 @@ const Libraries = db.libraries;
 
 exports.getAll = (req, res) => {
     console.log('getAll');
-    let request;
+    let scope = [];
     if(req.query){
-        if(req.query.status !== undefined || req.query.active !== undefined){
-            request = {where: {}};
-            if(req.query.status) request.where.realty_status = req.query.status;
-            if(req.query.active) request.where.realty_active_online = req.query.active;
+        if(req.query.limit)
+        {
+            if(!req.query.offset) req.query.offset = 0;
+            scope.push({method: ['limit', Number(req.query.offset), Number(req.query.limit)]});
         }
-        if(req.query.limit) request.limit = Number(req.query.limit);
+        if(req.query.order_field) {
+            let order = !req.query.order_direction ? 'DESC' : req.query.order_direction;
+            scope.push({method: ['order', req.query.order_field, order]});
+        }
+
+        if(req.query.media) scope.push('withMedia');
+
+        if(req.query.status){
+            scope.push({method: ['status', req.query.status]});
+        }
+        if(req.query.star){
+            scope.push(['star']);
+        }
+        if (req.query.active) {
+            scope.push(['active']);
+        }
     }
-    Realties.findAll(request).then(realties => {
+    Realties.scope(scope).findAll().then(realties => {
         res.status(200).json({
             "description": "Realties list",
             "realties": realties

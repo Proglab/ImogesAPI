@@ -123,7 +123,43 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {
     timestamp: true,
-    logging: console.log
+    logging: console.log,
+    scopes: {
+      limit (offset, limit) {
+        return {
+          offset: offset,
+          limit: limit
+        }
+      },
+      order (field, order) {
+        return {
+          order: [[field, order]]
+        }
+      },
+      withMedia: {
+        include: {
+          model: sequelize.models.librarycategories,
+          required: false
+        }
+      },
+      active:{
+        where: {
+          project_active_online: true
+        }
+      },
+      status (status) {
+        return {
+          where: {
+            realty_status: status
+          }
+        }
+      },
+      star:{
+        where: {
+          star: true
+        }
+      }
+    }
   });
   realties.associate = function(models) {
     models.realties.belongsTo(models.projects);
