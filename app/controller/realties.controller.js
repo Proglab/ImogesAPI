@@ -82,3 +82,28 @@ exports.getRealtiesByProject = (req, res) => {
         });
     });
 };
+
+exports.getOne = (req, res) => {
+    console.log('getOne');
+    console.log('id: ' + req.params.id);
+
+    let scope = [];
+    //scope.push({method: ['byProject', req.params.id]});
+    if(req.query){
+        if(req.query.media) scope.push('withMedia');
+
+        if(req.query.status){
+            scope.push({method: ['status', req.query.status]});
+        }
+        if (req.query.active) {
+            scope.push(['active']);
+        }
+    }
+
+    Realties.scope(scope).findByPk(req.params.id).then(realty => {
+        res.status(200).json({
+            "description": "getOne - " + req.params.id,
+            "realtiy": realty
+        });
+    });
+};
