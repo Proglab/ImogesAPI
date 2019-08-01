@@ -144,7 +144,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       active:{
         where: {
-          project_active_online: true
+          realty_active_online: true
         }
       },
       status (status) {
