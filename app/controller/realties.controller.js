@@ -103,7 +103,7 @@ exports.getOne = (req, res) => {
     Realties.scope(scope).findByPk(req.params.id).then(realty => {
         res.status(200).json({
             "description": "getOne - " + req.params.id,
-            "realtiy": realty
+            "realty": realty
         });
     });
 };
