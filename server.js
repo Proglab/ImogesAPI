@@ -2,11 +2,7 @@ const app = require('./app/app');
 const port = process.env.PORT || 4000;
 const db = require('./app/models');
 
-require('./app/route/users.route.js')(app);
-require('./app/route/auth.route.js')(app);
-require('./app/route/realties.route.js')(app);
-require('./app/route/projects.route.js')(app);
-require('./app/route/swagger.js')(app);
+require('./app/route/index.js')(app);
 
 const server = app.listen(port, function() {
 
