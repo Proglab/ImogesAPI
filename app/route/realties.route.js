@@ -5,6 +5,6 @@ module.exports = function(app) {
 
     app.get('/api/realties', controller.getAll);
     app.get('/api/projects/:id/realties', controller.getRealtiesByProject);
-    app.get('/api/projects/:projectid/realties/:id', controller.getOne);
+    app.get('/api/realties/:id', controller.getOne);
 
 };
