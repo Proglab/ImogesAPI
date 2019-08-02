@@ -165,6 +165,9 @@ module.exports = (sequelize, DataTypes) => {
             projectId: id
           }
         }
+      },
+      withProject: {
+          include: ["projects"]
       }
     }
   });
