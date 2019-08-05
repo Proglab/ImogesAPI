@@ -167,7 +167,7 @@ module.exports = (sequelize, DataTypes) => {
         }
       },
       withProject: {
-          include: ["projects"]
+          include: ["project"]
       }
     }
   });
