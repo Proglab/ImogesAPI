@@ -1,6 +1,5 @@
 
 const db = require('../models');
-const config = require('../config/configApp.js');
 
 const Realties = db.realties;
 const Librarycategories = db.librarycategories;

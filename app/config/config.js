@@ -1,3 +1,6 @@
+const dotenv = require('dotenv');
+dotenv.config();
+
 module.exports = {
     "development": {
         "username": process.env.DB_DEV_USERNAME,
@@ -19,5 +22,7 @@ module.exports = {
         "database": process.env.DB_PROD_DATABASE,
         "host": process.env.DB_PROD_HOST,
         "dialect": process.env.DB_PROD_DIALECT
-    }
+    },
+    'secret': process.env.SECRET,
+    ROLEs: process.env.ROLES
 };

@@ -1,6 +1,6 @@
 
 const db = require('../models');
-const config = require('../config/configApp.js');
+const config = require('../config/config.js');
 const User = db.users;
 const Role = db.role;
 const Op = db.Sequelize.Op;
