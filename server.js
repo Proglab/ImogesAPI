@@ -1,6 +1,9 @@
 const app = require('./app/app');
-const dotenv = require('dotenv');
-dotenv.config();
+if (process.env.NODE_ENV === "development" || process.env.NODE_ENV === undefined) {
+    const dotenv = require('dotenv');
+    dotenv.config();
+}
+
 const port = process.env.PORT || 4000;
 const db = require('./app/models');
 
