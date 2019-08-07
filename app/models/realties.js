@@ -154,9 +154,11 @@ module.exports = (sequelize, DataTypes) => {
           }
         }
       },
-      star:{
-        where: {
-          star: true
+      star (limit){
+        return {
+          order: [['star', 'DESC']],
+          offset: 0,
+          limit: limit
         }
       },
       byProject (id) {

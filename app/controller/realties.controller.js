@@ -21,7 +21,7 @@ exports.getAll = (req, res) => {
 
         if(req.query.media) scope.push('withMedia');
         if(req.query.status) scope.push({method: ['status', req.query.status]});
-        if(req.query.star) scope.push(['star']);
+        if(req.query.star) scope.push({method: ['star', Number(req.query.star)]});
         if(req.query.active) scope.push(['active']);
     }
     Realties.scope(scope).findAll().then(realties => {
