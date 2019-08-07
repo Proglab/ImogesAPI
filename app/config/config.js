@@ -19,11 +19,8 @@ module.exports = {
         "dialect": process.env.DB_TEST_DIALECT
     },
     "production": {
-        "username": process.env.DB_PROD_USERNAME,
-        "password": process.env.DB_PROD_PASSWORD,
-        "database": process.env.DB_PROD_DATABASE,
-        "host": process.env.DB_PROD_HOST,
-        "dialect": process.env.DB_PROD_DIALECT
+        "use_env_variable": 'DATABASE_URL',
+        "url": process.env.JAWSDB_URL
     },
     'secret': process.env.SECRET,
     ROLEs: process.env.ROLES

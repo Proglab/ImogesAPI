@@ -5,7 +5,9 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node server.js",
+    "db:migration": "heroku run sequelize db:migrate --env production --app imoges-api",
+    "bash": "heroku run bash --app \"imoges-api\""
   },
   "author": "Fabrice Gyre <info@proglab.com>",
   "license": "ISC",
@@ -16,6 +18,7 @@
     "jsonwebtoken": "^8.5.1",
     "mysql2": "^1.6.5",
     "node-mailjet": "^3.3.1",
+    "path": "^0.12.7",
     "sequelize": "^5.12.2",
     "sequelize-cli": "^5.5.0",
     "swagger-ui-express": "^4.0.7"
