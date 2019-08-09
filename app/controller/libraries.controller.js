@@ -10,7 +10,6 @@ exports.create = (req, res, next) => {
         return next(error);
     }
     res.send(file);
-
 };
 
 // FETCH all Customers

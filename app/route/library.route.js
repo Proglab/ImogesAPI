@@ -14,8 +14,7 @@ const upload = multer({ storage: storage });
 
 module.exports = function(app) {
 
-    const medias = require('../controller/medias.controller.js');
-    const uploader = require('../controller/upload.controller.js');
+    const medias = require('../controller/libraries.controller.js');
 
 
     // Create a new Customer
