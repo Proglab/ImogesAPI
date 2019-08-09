@@ -33,11 +33,28 @@ module.exports = (sequelize, DataTypes) => {
           where: {
             library_category_table_name: 'Projects',
             library_category_table_id: id
-          },
-          include: [
-            { model: sequelize.models.libraries }
-          ]
+          }
         }
+      },
+      withMediaByExtension(value) {
+        return {
+          include: [{ model: sequelize.models.libraries, where: { library_media_extension: value }}]
+        }
+      },
+      withMediaByParam(value) {
+        return {
+          include: [{ model: sequelize.models.libraries, where: { library_media_param: value }}]
+        }
+      },
+      withMediaByUser(value) {
+        return {
+          include: [{ model: sequelize.models.libraries, where: { UserId: value }}]
+        }
+      },
+      withMedia: {
+        include: [
+          { model: sequelize.models.libraries }
+        ]
       }
     }
   });
