@@ -51,6 +51,13 @@ module.exports = (sequelize, DataTypes) => {
           include: [{ model: sequelize.models.libraries, where: { UserId: value }}]
         }
       },
+      ByLabel(value) {
+        return {
+          where: {
+            library_category_label: value
+          }
+        }
+      },
       withMedia: {
         include: [
           { model: sequelize.models.libraries }
