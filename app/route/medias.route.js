@@ -1,23 +1,16 @@
+
 const multer = require('multer');
-function checkMultipart(req, res, next) {
-    const contentType = req.headers["content-type"];
-    // Make sure it's multipart/form
-    if (!contentType || !contentType.includes("multipart/form-data")) {
-        // Stop middleware chain and send a status
-        return res.sendStatus(500);
+
+var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'uploads')
+    },
+    filename: function (req, file, cb) {
+        cb(null, file.fieldname + '-' + Date.now())
     }
-    next();
-}
+});
 
-function rewriter(req, res, next) {
-    // Set the request fields that you want
-    req.body.avatarUri = req.file.destination + req.file.filename;
-    next();
-}
-
-
-
-
+const upload = multer({ storage: storage });
 
 module.exports = function(app) {
 
@@ -26,7 +19,7 @@ module.exports = function(app) {
 
 
     // Create a new Customer
-    app.post('/api/medias', checkMultipart, uploader.upload.single('media'), rewriter);
+    app.post('/api/medias', upload.single('media'), medias.create);
 
     // Retrieve a single Customer by Id
     app.get('/api/medias', medias.findAll);
