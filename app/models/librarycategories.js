@@ -21,6 +21,24 @@ module.exports = (sequelize, DataTypes) => {
       include: [
         { model: sequelize.models.libraries }
       ]
+    },
+    scopes: {
+      order(field, order) {
+        return {
+          order: [[field, order]]
+        }
+      },
+      projects(id) {
+        return {
+          where: {
+            library_category_table_name: 'Projects',
+            library_category_table_id: id
+          },
+          include: [
+            { model: sequelize.models.libraries }
+          ]
+        }
+      }
     }
   });
   librarycategories.associate = function(models) {
