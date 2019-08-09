@@ -36,6 +36,14 @@ module.exports = (sequelize, DataTypes) => {
           }
         }
       },
+      realties(id) {
+        return {
+          where: {
+            library_category_table_name: 'Realties',
+            library_category_table_id: id
+          }
+        }
+      },
       withMediaByExtension(value) {
         return {
           include: [{ model: sequelize.models.libraries, where: { library_media_extension: value }}]
