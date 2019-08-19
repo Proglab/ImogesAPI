@@ -20,30 +20,52 @@ exports.getAll = (req, res) => {
         if(req.query.media) scope.push('withMedia');
     }
 
-    scope.push('withPhase');
-
-    // request.where.project_start_diffusion_date = {[Op.lt]: new Date()};
-    Projects.scope(scope).findAll().then(projects => {
-        res.status(200).json({
-            "description": "projects list",
-            "projects": projects
+    if(!req.query.countonly){
+        scope.push('withPhase');
+        Projects.scope(scope).findAll().then(projects => {
+            res.status(200).json({
+                "description": "projects list",
+                "projects": projects
+            });
+        }).catch(err => {
+            if (err.name === 'SequelizeDatabaseError')
+            {
+                res.status(500).json({
+                    "description": err.parent.sqlMessage,
+                    "error": err
+                });
+            }
+            else
+            {
+                res.status(500).json({
+                    "description": "Can not access",
+                    "error": err
+                });
+            }
         });
-    }).catch(err => {
-        if (err.name === 'SequelizeDatabaseError')
-        {
-            res.status(500).json({
-                "description": err.parent.sqlMessage,
-                "error": err
+    }else{
+        Projects.scope(scope).count().then(totalProjects => {
+            res.status(200).json({
+                "description": "count projects",
+                "totalProjects": totalProjects
             });
-        }
-        else
-        {
-            res.status(500).json({
-                "description": "Can not access",
-                "error": err
-            });
-        }
-    });
+        }).catch(err => {
+            if (err.name === 'SequelizeDatabaseError')
+            {
+                res.status(500).json({
+                    "description": err.parent.sqlMessage,
+                    "error": err
+                });
+            }
+            else
+            {
+                res.status(500).json({
+                    "description": "Can not access",
+                    "error": err
+                });
+            }
+        });
+    }
 };
 
 exports.getOne = (req, res) => {

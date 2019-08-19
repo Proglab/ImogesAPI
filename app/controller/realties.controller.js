@@ -59,18 +59,31 @@ exports.getRealtiesByProject = (req, res) => {
         if(req.query.star) scope.push(['star']);
         if(req.query.active) scope.push(['active']);
     }
-
-    Realties.scope(scope).findAll().then(realties => {
-        res.status(200).json({
-            "description": "getRealtiesByProject - " + req.params.id,
-            "realties": realties
+    if(!req.query.countonly){
+        Realties.scope(scope).findAll().then(realties => {
+            res.status(200).json({
+                "description": "getRealtiesByProject - " + req.params.id,
+                "realties": realties
+            });
+        }).catch(err => {
+            res.status(500).json({
+                "description": "Can not access",
+                "error": err
+            });
         });
-    }).catch(err => {
-        res.status(500).json({
-            "description": "Can not access",
-            "error": err
+    }else{
+        Realties.scope(scope).count().then(totalRealties => {
+            res.status(200).json({
+                "description": "getRealtiesByProject - " + req.params.id,
+                "totalRealties": totalRealties
+            });
+        }).catch(err => {
+            res.status(500).json({
+                "description": "Can not access",
+                "error": err
+            });
         });
-    });
+    }
 };
 
 exports.getOne = (req, res) => {
