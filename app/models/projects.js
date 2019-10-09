@@ -171,6 +171,9 @@ module.exports = (sequelize, DataTypes) => {
       },
       withPhase: {
         include: ["current_phase", "phases"]
+      },
+      withRealties: {
+        include: ['realties']
       }
     }
   });
