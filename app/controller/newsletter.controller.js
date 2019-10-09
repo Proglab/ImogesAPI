@@ -5,6 +5,7 @@
     const Users = db.users;
 
 
+    /*
     function createContact(user, client)
     {
         console.log(user);
@@ -12,7 +13,7 @@
         .request({
             "ContactsLists":[
                 {
-                    "ListID": 3,
+                    "ListID": [2917],
                     "action": "addnoforce"
                 }
             ],
@@ -28,6 +29,17 @@
                 }
             ]
         });
+    }
+    */
+    function createContact(user, client)
+    {
+        console.log(user);
+        return mailjet.post("contact")
+            .request({
+                "Email": user.email,
+                "IsExcludedFromCampaigns":"true",
+                "Name": user.firstname + " " + user.lastname
+            });
     }
 
     // Post a Customer
@@ -49,7 +61,7 @@
                 console.log(result.body)
             })
             .catch((err) => {
-                console.log(err.statusCode)
+                console.log(err)
             });
         });
     };
