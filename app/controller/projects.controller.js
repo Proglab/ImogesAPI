@@ -18,6 +18,7 @@ exports.getAll = (req, res) => {
         }
         if(req.query.diffused) scope.push('diffused');
         if(req.query.media) scope.push('withMedia');
+        if(req.query.realties) scope.push('withRealties');
     }
 
     if(!req.query.countonly){
