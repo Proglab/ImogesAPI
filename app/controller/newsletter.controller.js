@@ -47,10 +47,18 @@
         Users.findOne({ where: {email: req.body.email} }).then(user => {
             createContact(user, true)
             .then((result) => {
-                console.log(result.body)
+                console.log(result.body);
+                res.status(200).json({
+                    "description": "Ajout subscriber",
+                    "mailjet": result.body
+                });
             })
             .catch((err) => {
-                console.log(err.statusCode)
+                console.log(err.statusCode);
+                res.status(500).json({
+                    "description": err.statusCode,
+                    "error": err
+                });
             });
         }).catch((err) => {
             user = {};
@@ -58,10 +66,18 @@
             user.firstname = "";
             user.lastname = "";
             createContact(user, false).then((result) => {
-                console.log(result.body)
+                console.log(result.body);
+                res.status(200).json({
+                    "description": "Ajout subscriber",
+                    "mailjet": result.body
+                });
             })
             .catch((err) => {
-                console.log(err)
+                console.log(err);
+                res.status(500).json({
+                    "description": 'Erreur',
+                    "error": err
+                });
             });
         });
     };
