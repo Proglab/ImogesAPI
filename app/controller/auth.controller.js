@@ -43,12 +43,12 @@ exports.signin = (req, res) => {
         where: {username: req.body.username}
     }).then(user => {
         if (!user) {
-            return res.status(404).send('User Not Found.');
+            return res.status(404).send('Utilisateur non trouvé!');
         }
 
         var passwordIsValid = bcrypt.compareSync(req.body.password, user.password);
         if (!passwordIsValid) {
-            return res.status(401).send({ auth: false, accessToken: null, reason: "Invalid Password!" });
+            return res.status(401).send({ auth: false, accessToken: null, reason: "Mauvais mot de passe!" });
         }
 
         var token = jwt.sign({ id: user.id }, config.secret, {
