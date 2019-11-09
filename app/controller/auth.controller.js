@@ -2,7 +2,7 @@
 const db = require('../models');
 const config = require('../config/config.js');
 const User = db.users;
-const Role = db.role;
+const Role = db.roles;
 const Op = db.Sequelize.Op;
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
@@ -40,7 +40,14 @@ exports.signin = (req, res) => {
     console.log("Sign-In");
 
     User.findOne({
-        where: {username: req.body.username}
+        where: {username: req.body.username},
+        include: [{
+            model: Role,
+            attributes: ['id', 'name'],
+            through: {
+                attributes: ['userId', 'roleId'],
+            }
+        }]
     }).then(user => {
         if (!user) {
             return res.status(404).send('Utilisateur non trouvé!');
