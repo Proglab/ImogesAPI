@@ -50,7 +50,7 @@ exports.signin = (req, res) => {
         }]
     }).then(user => {
         if (!user) {
-            return res.status(404).send('Utilisateur non trouvé!');
+            return res.status(404).send({ auth: false, accessToken: null, reason: 'Utilisateur non trouvé!' });
         }
 
         const passwordIsValid = bcrypt.compareSync(req.body.password, user.password);
