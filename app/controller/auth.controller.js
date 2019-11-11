@@ -7,6 +7,16 @@ const Op = db.Sequelize.Op;
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
+exports.verifyToken = (req, res) =>{
+    jwt.verify(req.body.token, config.secret, function(error, decoded){
+        if(decoded){
+            res.status(200).send({ valid: true });
+        }else{
+            res.status(500).send({ valid: false });
+        }
+    });
+};
+
 exports.signup = (req, res) => {
     // Save User to Database
     console.log("Processing func -> SignUp");
