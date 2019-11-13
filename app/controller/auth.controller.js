@@ -12,7 +12,7 @@ exports.verifyToken = (req, res) =>{
         if(decoded){
             res.status(200).send({ valid: true });
         }else{
-            res.status(500).send({ valid: false });
+            res.status(403).send({ valid: false });
         }
     });
 };
