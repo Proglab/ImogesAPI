@@ -6,6 +6,8 @@ const Role = db.roles;
 const Op = db.Sequelize.Op;
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const mailjet = require ('node-mailjet')
+    .connect(process.env.MAILJET_KEY,process.env.MAILJET_SECRET);
 
 exports.verifyToken = (req, res) =>{
     jwt.verify(req.body.token, config.secret, function(error, decoded){
@@ -28,6 +30,7 @@ exports.signup = (req, res) => {
         email: req.body.email,
         password: bcrypt.hashSync(req.body.password, 8)
     }).then(user => {
+        const newUser = user;
         Role.findAll({
             where: {
                 name: {
@@ -36,13 +39,36 @@ exports.signup = (req, res) => {
             }
         }).then(roles => {
             user.setRoles(roles).then(() => {
-                res.send("User registered successfully!");
+                const token = jwt.sign({ id: newUser.id }, config.secret, {
+                    expiresIn: 86400 // expires in 24 hours
+                });
+
+                const request = mailjet
+                    .post("send", {'version': 'v3.1'})
+                    .request({
+                        "Messages": setVerifMail(token, newUser.id, newUser.email, newUser.firstname + ' ' + newUser.lastname)
+                    });
+                request
+                    .then((result) => {
+                        console.log(result.body)
+                        /*
+                        res.status(200).json({
+                            "description": "Mail envoyé",
+                            "success": true
+                        });
+                        */
+                        res.status(200).send({message: "Votre compte a été créé avec succès, vérifiez votre messagerie."});
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                        res.status(500).send({message: "Votre compte a été créé avec succès mais il y a eu un problème lors de l'envoi du mail"});
+                    })
             });
         }).catch(err => {
-            res.status(500).send("Error -> " + err);
+            res.status(500).send(err);
         });
     }).catch(err => {
-        res.status(500).send("Fail! Error -> " + err);
+        res.status(500).send(err);
     })
 };
 
@@ -153,3 +179,23 @@ exports.managementBoard = (req, res) => {
         });
     })
 };
+
+function setVerifMail(token, userId, email, fullname){
+    const validationLink = config.websiteUrl + "auth/validate?token=" + token + "&userId=" + userId;
+    return [
+        {
+            "From": {
+                "Email": "info@absolute-fx.com",
+                "Name": "Imoges"
+            },
+            "To": [
+                {
+                    "Email": email,
+                    "Name": fullname
+                }
+            ],
+            "Subject": "Activation de votre compte",
+            "HTMLPart": "Cher <b>" + fullname + "</b>, <br>Merci pour votre enregistrement sur le site web de la société Imoges.<br>Veuillez cliquer sur le lien suivant pour activer votre compte: <a href='" + validationLink + "'>" + validationLink + "</a>"
+        }
+    ];
+}

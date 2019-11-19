@@ -6,7 +6,7 @@ module.exports = function(app) {
 
     const controller = require('../controller/auth.controller.js');
 
-    app.post('/api/auth/signup', [verifySignUp.checkDuplicateUserNameOrEmail, verifySignUp.checkRolesExisted], controller.signup);
+    app.post('/api/auth/signup', [allowCrossOrigin, verifySignUp.checkDuplicateUserNameOrEmail, verifySignUp.checkRolesExisted], controller.signup);
 
     app.post('/api/auth/signin', [allowCrossOrigin], controller.signin);
 
