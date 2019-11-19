@@ -46,17 +46,12 @@ exports.signup = (req, res) => {
                 const request = mailjet
                     .post("send", {'version': 'v3.1'})
                     .request({
-                        "Messages": setVerifMail(token, newUser.id, newUser.email, newUser.firstname + ' ' + newUser.lastname)
+                        "Messages": setVerifMail(token, newUser.id, newUser.email, newUser.firstname, newUser.lastname)
                     });
                 request
                     .then((result) => {
                         console.log(result.body)
-                        /*
-                        res.status(200).json({
-                            "description": "Mail envoyé",
-                            "success": true
-                        });
-                        */
+
                         res.status(200).send({message: "Votre compte a été créé avec succès, vérifiez votre messagerie."});
                     })
                     .catch((err) => {
@@ -180,13 +175,14 @@ exports.managementBoard = (req, res) => {
     })
 };
 
-function setVerifMail(token, userId, email, fullname){
+function setVerifMail(token, userId, email, firstname, lastname){
+    const fullname = firstname + " " + lastname;
     const validationLink = config.websiteUrl + "auth/validate?token=" + token + "&userId=" + userId;
     return [
         {
             "From": {
                 "Email": "info@absolute-fx.com",
-                "Name": "Imoges"
+                "Name": "Imoges sprl"
             },
             "To": [
                 {
@@ -195,7 +191,12 @@ function setVerifMail(token, userId, email, fullname){
                 }
             ],
             "Subject": "Activation de votre compte",
-            "HTMLPart": "Cher <b>" + fullname + "</b>, <br>Merci pour votre enregistrement sur le site web de la société Imoges.<br>Veuillez cliquer sur le lien suivant pour activer votre compte: <a href='" + validationLink + "'>" + validationLink + "</a>"
+            "TemplateId": 1094699,
+            "TemplateLanguage": true,
+            "Variables":{
+                "firstname": firstname,
+                "validationLink": validationLink
+            }
         }
     ];
 }
