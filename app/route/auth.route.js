@@ -12,6 +12,8 @@ module.exports = function(app) {
 
     app.post('/api/auth/verify', [allowCrossOrigin], controller.verifyToken);
 
+    app.post('/api/auth/validationmail', [allowCrossOrigin], controller.validationMail);
+
     app.get('/api/test/user', [authJwt.verifyToken], controller.userContent);
 
     app.get('/api/test/pm', [authJwt.verifyToken, authJwt.isPmOrAdmin], controller.managementBoard);

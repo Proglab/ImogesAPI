@@ -50,7 +50,7 @@ exports.signup = (req, res) => {
                     });
                 request
                     .then((result) => {
-                        console.log(result.body)
+                        console.log(result.body);
 
                         res.status(200).send({message: "Votre compte a été créé avec succès, vérifiez votre messagerie."});
                     })
@@ -173,6 +173,35 @@ exports.managementBoard = (req, res) => {
             "error": err
         });
     })
+};
+
+exports.validationMail = function(req, res){
+
+    User.findOne({
+        where: {id: req.body.userId}
+    }).then(user => {
+        const token = jwt.sign({ id: user.id }, config.secret, {
+            expiresIn: 86400 // expires in 24 hours
+        });
+
+        const request = mailjet
+            .post("send", {'version': 'v3.1'})
+            .request({
+                "Messages": setVerifMail(token, user.id, user.email, user.firstname, user.lastname)
+            });
+        request
+            .then((result) => {
+                console.log(result.body);
+
+                res.status(200).send({message: "Un email avec un lien de validation vous a été envoyé"});
+            })
+            .catch((err) => {
+                console.log(err);
+                res.status(500).send({message: "Problème lors de l'envoi du mail de validation"});
+            })
+    }).catch((err) =>{
+        res.status(500).send('Error -> ' + err);
+    });
 };
 
 function setVerifMail(token, userId, email, firstname, lastname){

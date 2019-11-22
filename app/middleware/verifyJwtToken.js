@@ -5,10 +5,7 @@ const Role = db.role;
 const User = db.users;
 
 verifyToken = (req, res, next) => {
-
-
     console.log('verifyToken');
-
     let token = req.headers['x-access-token'];
 
     if (!token){
@@ -19,9 +16,12 @@ verifyToken = (req, res, next) => {
 
     jwt.verify(token, config.secret, (err, decoded) => {
         if (err){
+            let userId = req.body.userId || 0;
+            if(req.body.userId)
             return res.status(500).send({
                 auth: false,
-                message: 'Fail to Authentication. Error -> ' + err
+                message: 'Fail to Authentication. Error -> ' + err,
+                userId: userId
             });
         }
 

@@ -68,6 +68,10 @@ module.exports = (sequelize, Sequelize) => {
           msg: 'tooshort_or_toobig'
         }
       }
+    },
+    validated:{
+      type:Sequelize.INTEGER,
+      defaultValue: 0
     }
   }, {
     timestamp: true,

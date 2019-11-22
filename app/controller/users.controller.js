@@ -27,7 +27,7 @@ exports.findAll = (req, res) => {
 
 // Find a Customer by Id
 exports.findById = (req, res) => {
-    Users.findById(req.params.customerId).then(customer => {
+    Users.findByPk(req.params.customerId).then(customer => {
         res.send(customer);
     })
 };
@@ -49,5 +49,17 @@ exports.delete = (req, res) => {
         where: { id: id }
     }).then(() => {
         res.status(200).send('deleted successfully a customer with id = ' + id);
+    });
+};
+
+// validation du compte via mail
+exports.validate = (req, res) => {
+    Users.update( { validated: 1},
+        { where: {id: req.userId} }
+    ).then((data) => {
+        res.status(200).send({auth: true, message: "updated successfully a customer with id = " + req.userId});
+    }).catch((err) => {
+        console.log(err);
+        res.status(500).send({message: "Houston we've got a problem :)"});
     });
 };
