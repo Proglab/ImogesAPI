@@ -10,9 +10,13 @@ module.exports = function(app) {
 
     app.post('/api/auth/signin', [allowCrossOrigin], controller.signin);
 
-    app.post('/api/auth/verify', [allowCrossOrigin], controller.verifyToken);
+    app.get('/api/auth/verifytoken', [allowCrossOrigin], controller.verifyToken);
 
     app.post('/api/auth/validationmail', [allowCrossOrigin], controller.validationMail);
+
+    app.post('/api/auth/resetpass', [allowCrossOrigin], controller.resetPass);
+
+    app.put('/api/auth/newpass', [allowCrossOrigin, authJwt.verifyToken], controller.newPass);
 
     app.get('/api/test/user', [authJwt.verifyToken], controller.userContent);
 

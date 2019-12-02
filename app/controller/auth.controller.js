@@ -10,7 +10,7 @@ const mailjet = require ('node-mailjet')
     .connect(process.env.MAILJET_KEY,process.env.MAILJET_SECRET);
 
 exports.verifyToken = (req, res) =>{
-    jwt.verify(req.body.token, config.secret, function(error, decoded){
+    jwt.verify(req.query.token, config.secret, function(error, decoded){
         if(decoded){
             res.status(200).send({ valid: true });
         }else{
@@ -43,10 +43,11 @@ exports.signup = (req, res) => {
                     expiresIn: 86400 // expires in 24 hours
                 });
 
+                const mailType= 'account_validation';
                 const request = mailjet
                     .post("send", {'version': 'v3.1'})
                     .request({
-                        "Messages": setVerifMail(token, newUser.id, newUser.email, newUser.firstname, newUser.lastname)
+                        "Messages": setMail(mailType, token, newUser.id, newUser.email, newUser.firstname, newUser.lastname, 1094699, "Activation de votre compte")
                     });
                 request
                     .then((result) => {
@@ -183,11 +184,11 @@ exports.validationMail = function(req, res){
         const token = jwt.sign({ id: user.id }, config.secret, {
             expiresIn: 86400 // expires in 24 hours
         });
-
+        const mailType= 'account_validation';
         const request = mailjet
             .post("send", {'version': 'v3.1'})
             .request({
-                "Messages": setVerifMail(token, user.id, user.email, user.firstname, user.lastname)
+                "Messages": setMail(mailType, token, user.id, user.email, user.firstname, user.lastname, 1094699, "Activation de votre compte")
             });
         request
             .then((result) => {
@@ -204,9 +205,56 @@ exports.validationMail = function(req, res){
     });
 };
 
-function setVerifMail(token, userId, email, firstname, lastname){
+exports.resetPass = function(req, res){
+    User.findOne({
+        where: {email: req.body.email}
+    }).then(user => {
+        const token = jwt.sign({id: user.id}, config.secret, {
+            expiresIn: 3600 // expires in 24 hours
+        });
+        const mailType= 'reset_pass';
+        const request = mailjet
+            .post("send", {'version': 'v3.1'})
+            .request({
+                "Messages": setMail(mailType, token, user.id, user.email, user.firstname, user.lastname, 1102536, "Nouveau mot de passe")
+            });
+        request
+            .then((result) => {
+                console.log(result.body);
+
+                res.status(200).send({message: "Un email avec un lien de validation vous a été envoyé", status: true});
+            })
+            .catch((err) => {
+                console.log(err);
+                res.status(500).send({message: "Problème lors de l'envoi du mail de validation", status: false});
+            })
+    }).catch((err) =>{
+        res.status(500).send({message: "Aucun utilisateur trouvé", status: false});
+    })
+};
+
+exports.newPass = function(req, res){
+    User.update( { password: bcrypt.hashSync(req.body.password, 8)},
+        { where: {id: req.userId} }
+    ).then((data) => {
+        res.status(200).send({status: true, message: "Mot de passe changé"});
+    }).catch((err) => {
+        console.log(err);
+        res.status(500).send({message: "Houston we've got a problem :)", status: false});
+    });
+};
+
+function setMail(mailType, token, userId, email, firstname, lastname, templateId, title){
     const fullname = firstname + " " + lastname;
-    const validationLink = config.websiteUrl + "auth/validate?token=" + token + "&userId=" + userId;
+    let link;
+    switch (mailType){
+        case 'account_validation':
+            link = config.websiteUrl + "auth/validate?token=" + token + "&userId=" + userId;
+            break;
+        case 'reset_pass':
+            link = config.websiteUrl + 'auth/newpass?token=' + token;
+            break;
+    }
     return [
         {
             "From": {
@@ -219,12 +267,12 @@ function setVerifMail(token, userId, email, firstname, lastname){
                     "Name": fullname
                 }
             ],
-            "Subject": "Activation de votre compte",
-            "TemplateId": 1094699,
+            "Subject": title,
+            "TemplateId": templateId,
             "TemplateLanguage": true,
             "Variables":{
                 "firstname": firstname,
-                "validationLink": validationLink
+                "validationLink": link
             }
         }
     ];
