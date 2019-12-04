@@ -72,6 +72,28 @@ module.exports = (sequelize, Sequelize) => {
     validated:{
       type:Sequelize.INTEGER,
       defaultValue: 0
+    },
+    mobile: {
+      type:Sequelize.STRING(16),
+      allowNull: true,
+      validate:{
+        len:{
+          args: [9, 20],
+          msg: 'tooshort_or_toobig'
+        }
+      }
+    },
+    address: {
+      type: Sequelize.STRING,
+      allowNull: true
+    },
+    city: {
+        type: Sequelize.STRING,
+        allowNull: true
+    },
+    pc:{
+      type: Sequelize.STRING(10),
+      allowNull: true
     }
   }, {
     timestamp: true,
