@@ -7,8 +7,10 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
     "db:migration": "heroku run sequelize db:migrate --env production --app imoges-api",
+    "db:migration_local": "sequelize db:migrate",
     "bash": "heroku run bash --app \"imoges-api\"",
-    "start_dev": "nodemon server.js"
+    "start_dev": "nodemon server.js",
+    "after_pull": "npm update"
   },
   "author": "Fabrice Gyre <info@proglab.com>",
   "license": "ISC",
