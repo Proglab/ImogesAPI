@@ -9,8 +9,7 @@
     "db:migration": "heroku run sequelize db:migrate --env production --app imoges-api",
     "db:migration_local": "sequelize db:migrate",
     "bash": "heroku run bash --app \"imoges-api\"",
-    "start_dev": "nodemon server.js",
-    "after_pull": "npm update"
+    "start_dev": "nodemon server.js"
   },
   "author": "Fabrice Gyre <info@proglab.com>",
   "license": "ISC",
