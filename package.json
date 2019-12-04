@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
     "db:migration": "heroku run sequelize db:migrate --env production --app imoges-api",
-    "bash": "heroku run bash --app \"imoges-api\""
+    "bash": "heroku run bash --app \"imoges-api\"",
+    "start_dev": "nodemon server.js"
   },
   "author": "Fabrice Gyre <info@proglab.com>",
   "license": "ISC",
@@ -28,6 +29,7 @@
     "swagger-ui-express": "^4.0.7"
   },
   "devDependencies": {
-    "dotenv": "^8.0.0"
+    "dotenv": "^8.0.0",
+    "nodemon": "^2.0.1"
   }
 }
