@@ -175,6 +175,7 @@ module.exports = (sequelize, DataTypes) => {
   });
   realties.associate = function(models) {
     models.realties.belongsTo(models.projects);
+    models.realties.belongsTo(models.users);
     models.realties.belongsTo(models.realtytypes);
     models.realties.belongsTo(models.realtycontracttypes);
     models.realties.hasMany(models.librarycategories, {
