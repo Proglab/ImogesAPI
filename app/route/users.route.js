@@ -16,10 +16,10 @@ module.exports = function(app) {
     app.put('/api/users/validate', [allowCrossOrigin, authJwt.verifyToken], users.validate);
 
     // Retrieve a single Customer by Id
-    app.get('/api/users/:customerId', users.findById);
+    app.get('/api/users/:customerId', [allowCrossOrigin, authJwt.verifyToken], users.findById);
 
     // Update a Customer with Id
-    app.put('/api/users/:customerId', users.update);
+    app.put('/api/users/:customerId', [allowCrossOrigin, authJwt.verifyToken],users.update);
 
     // Delete a Customer with Id
     app.delete('/api/users/:customerId', users.delete);

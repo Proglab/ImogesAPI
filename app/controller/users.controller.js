@@ -35,7 +35,15 @@ exports.findById = (req, res) => {
 // Update a Customer
 exports.update = (req, res) => {
     const id = req.params.customerId;
-    Users.update( { firstname: req.body.firstname, lastname: req.body.lastname },
+    Users.update( {
+            firstname: req.body.firstname,
+            lastname: req.body.lastname,
+            email: req.body.email,
+            mobile: req.body.mobile,
+            address: req.body.address,
+            city: req.body.city,
+            pc: req.body.pc
+        },
         { where: {id: req.params.customerId} }
     ).then(() => {
         res.status(200).send("updated successfully a customer with id = " + id);
