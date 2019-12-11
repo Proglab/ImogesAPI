@@ -94,6 +94,34 @@ module.exports = (sequelize, Sequelize) => {
     pc:{
       type: Sequelize.STRING(10),
       allowNull: true
+    },
+    country_code:{
+        type: Sequelize.STRING(3),
+        defaultValue: 'BE'
+    },
+    company_name:{
+        type: Sequelize.STRING,
+        allowNull: true
+    },
+    company_vat:{
+        type: Sequelize.STRING,
+        allowNull: true
+    },
+    company_address:{
+        type: Sequelize.STRING,
+        allowNull: true
+    },
+    company_city:{
+        type: Sequelize.STRING,
+        allowNull: true
+    },
+    company_pc:{
+        type: Sequelize.STRING,
+        allowNull: true
+    },
+    company_country_code:{
+        type: Sequelize.STRING(3),
+        defaultValue: 'BE'
     }
   }, {
     timestamp: true,
