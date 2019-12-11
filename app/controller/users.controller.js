@@ -34,7 +34,9 @@ exports.findById = (req, res) => {
 
 // Update a Customer
 exports.update = (req, res) => {
-    const id = req.params.customerId;
+    // A modifier pour sécuriser -> si pas admin, userId vient du token si pas de customerId
+    const id = req.params.customerId; // ok si admin détecté
+
     Users.update( {
             firstname: req.body.firstname,
             lastname: req.body.lastname,
@@ -44,9 +46,11 @@ exports.update = (req, res) => {
             city: req.body.city,
             pc: req.body.pc
         },
-        { where: {id: req.params.customerId} }
+        { where: {id: id} }
     ).then(() => {
-        res.status(200).send("updated successfully a customer with id = " + id);
+        res.status(200).send( {auth: true, message: "updated successfully a customer with id = " + id});
+    }).catch((err) => {
+        res.status(500).send( {auth: false, message: err});
     });
 };
 
