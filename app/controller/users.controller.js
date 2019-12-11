@@ -44,7 +44,12 @@ exports.update = (req, res) => {
             mobile: req.body.mobile,
             address: req.body.address,
             city: req.body.city,
-            pc: req.body.pc
+            pc: req.body.pc,
+            company_name: req.body.company_name,
+            company_vat: req.body.company_vat,
+            company_address: req.body.company_address,
+            company_city: req.body.company_city,
+            company_pc: req.body.company_pc
         },
         { where: {id: id} }
     ).then(() => {
