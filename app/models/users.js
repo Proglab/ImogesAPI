@@ -124,8 +124,13 @@ module.exports = (sequelize, Sequelize) => {
         defaultValue: 'BE'
     }
   }, {
-    timestamp: true,
-    logging: console.log
+      timestamp: true,
+      logging: console.log,
+      scopes: {
+          withRealties:{
+              include: ['realties']
+          }
+      }
   });
   users.associate = function(models) {
     models.users.belongsToMany(models.roles, { through: 'user_roles', foreignKey: 'userId', otherKey: 'roleId'});

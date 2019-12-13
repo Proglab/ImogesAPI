@@ -27,7 +27,9 @@ exports.findAll = (req, res) => {
 
 // Find a Customer by Id
 exports.findById = (req, res) => {
-    Users.findByPk(req.params.customerId).then(customer => {
+    let scope = [];
+    if(req.query.realties) scope.push('withRealties');
+    Users.scope(scope).findByPk(req.params.customerId).then(customer => {
         res.send(customer);
     })
 };
