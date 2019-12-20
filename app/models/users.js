@@ -128,7 +128,17 @@ module.exports = (sequelize, Sequelize) => {
       logging: console.log,
       scopes: {
           withRealties:{
-              include: ['realties']
+              include: [{
+                  model: sequelize.models.realties,
+                  required : true,
+                  include:[
+                      {
+                          model: sequelize.models.projects,
+                          required: true
+                      }
+                  ]
+                }
+              ]
           }
       }
   });
