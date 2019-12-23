@@ -19,8 +19,5 @@ module.exports = (sequelize, Sequelize) => {
         logging: console.log,
         scopes:{}
     });
-    partners.associate = function(models) {
-        //models.partners.hasOne(models.users);
-    };
     return partners
 };
