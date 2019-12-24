@@ -123,6 +123,10 @@ module.exports = (sequelize, DataTypes) => {
     },
     realty_reception_date:{
       type: DataTypes.DATE
+    },
+    realty_warranty:{
+      type: DataTypes.INTEGER,
+      defaultValue: 24
     }
   }, {
     timestamp: true,
