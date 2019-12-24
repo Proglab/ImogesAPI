@@ -120,6 +120,9 @@ module.exports = (sequelize, DataTypes) => {
     },
     star:{
       type: DataTypes.BOOLEAN
+    },
+    realty_reception_date:{
+      type: DataTypes.DATE
     }
   }, {
     timestamp: true,
