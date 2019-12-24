@@ -19,5 +19,8 @@ module.exports = (sequelize, Sequelize) => {
         logging: console.log,
         scopes:{}
     });
+    partners.associate = function(models) {
+        models.partners.belongsToMany(models.projects, { through: 'project_partners' } );
+    };
     return partners
 };

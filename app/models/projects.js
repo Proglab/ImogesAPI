@@ -182,6 +182,7 @@ module.exports = (sequelize, DataTypes) => {
     models.projects.hasMany(models.realties);
     models.projects.belongsTo(models.phases, {foreignKey: 'project_actual_phase', targetKey: 'id', as: 'current_phase'});
     models.projects.belongsTo(models.projecttypes);
+    models.projects.belongsToMany(models.partners, { through: 'project_partners' } );
     models.projects.hasMany(models.librarycategories, {
       foreignKey: 'library_category_table_id',
       foreignKeyConstraint: false,
