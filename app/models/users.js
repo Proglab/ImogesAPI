@@ -151,6 +151,7 @@ module.exports = (sequelize, Sequelize) => {
     models.users.belongsToMany(models.roles, { through: 'user_roles', foreignKey: 'userId', otherKey: 'roleId'});
     models.users.belongsToMany(models.realties, { through: 'users_realties' } );
     models.users.hasOne(models.partners);
+    models.users.hasOne(models.ticket_messages);
   };
   return users;
 };

@@ -185,6 +185,7 @@ module.exports = (sequelize, DataTypes) => {
     models.realties.belongsToMany(models.users, { through: 'users_realties' } );
     models.realties.belongsTo(models.realtytypes);
     models.realties.belongsTo(models.realtycontracttypes);
+    models.realties.hasOne(models.tickets);
     models.realties.hasMany(models.librarycategories, {
       foreignKey: 'library_category_table_id',
       foreignKeyConstraint: false,
