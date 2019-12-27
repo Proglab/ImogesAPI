@@ -7,6 +7,10 @@ module.exports = (sequelize, Sequelize) => {
             autoIncrement: true,
             allowNull: false
         },
+        title:{
+            type: Sequelize.TEXT,
+            allowNull: false
+        },
         priority:{
             type: Sequelize.INTEGER,
             allowNull: false
@@ -21,10 +25,38 @@ module.exports = (sequelize, Sequelize) => {
     }, {
         timestamp: true,
         logging: console.log,
-        scopes: {}
+        scopes: {
+            withAll: {
+                include: [
+                    {
+                        model: sequelize.models.realties,
+                        required : true,
+                        include:[
+                            {
+                                model: sequelize.models.projects,
+                                required: true
+                            }
+                        ]
+                    },{
+                        model: sequelize.models.ticketmessages,
+                        include:[
+                            {
+                                model: sequelize.models.librarycategories,
+                                required: false
+                            }
+                        ]
+
+                    },{
+                        model: sequelize.models.partners
+                    }
+                ]
+            }
+        }
     });
     tickets.associate = function(models) {
-        models.tickets.hasOne(models.ticket_messages);
+        models.tickets.belongsTo(models.realties);
+        models.tickets.belongsTo(models.partners);
+        models.tickets.hasMany(models.ticketmessages);
     };
     return tickets;
 };
