@@ -2,7 +2,10 @@ const db = require('../models');
 const Tickets = db.tickets;
 const Ticketmessages = db.ticketmessages;
 const Librarycategories = db.librarycategories;
+const Users = db.users;
 const Libraries = db.libraries;
+const Partners = db.partners;
+const Realties = db.realties;
 
 exports.create = (req, res) => {
     //console.log(req.body);
@@ -10,14 +13,15 @@ exports.create = (req, res) => {
         priority: req.body.priority,
         partnerId: req.body.partnerId,
         realtyId: req.body.realtyId,
-        title: req.body.title
+        title: req.body.title,
+        userId: req.userId
     }).then(ticket => {
         Ticketmessages.create({
             message: req.body.message,
             ticketId: ticket.id,
             userId: req.userId
         }).then(message =>{
-            if(req.body){
+            if(req.body.pictures){
                 if(Array.isArray(req.body.pictures)) {
                     // images multiples
                     console.log('multiple');
@@ -41,7 +45,7 @@ exports.create = (req, res) => {
                         Libraries.bulkCreate(allPictures, {returning: true}).then(allPictures =>{
                             res.send({ticket: ticket, message: message, allPictures: allPictures});
                         }).catch(function(error){
-                            res.json(error);
+                            res.status(500).json(error);
                         });
                     });
                 }else{
@@ -60,6 +64,8 @@ exports.create = (req, res) => {
                             userId: req.userId
                         }).then(libraries =>{
                             res.send({ticket: ticket, message: message, libraries: libraries});
+                        }).catch(function(error){
+                            res.status(500).json(error);
                         });
                     });
                 }
@@ -71,12 +77,123 @@ exports.create = (req, res) => {
 };
 
 exports.getOne = (req, res) => {
-    Tickets.scope(['withAll']).findByPk(req.query.id).then(ticket => {
+    Tickets.scope(['withAll']).findByPk(req.query.id, {
+        include: [{model: Users}, {model:Partners, required: true, include:Users}, {model: Ticketmessages, order:[['id', 'DESC']], include:[
+            {model:Librarycategories, require: false},
+            {model:Users, required: true},
+        ]}]
+    }).then(ticket => {
         res.status(200).json({
             "description": "getOne - " + req.query.id,
             "ticket": ticket
         });
     }).catch(err => {
+        res.status(500).json({
+            "description": "Can not access",
+            "error": err
+        });
+    });
+};
+
+exports.createMessage = (req, res) =>{
+    Ticketmessages.create({
+        message: req.body.message,
+        ticketId: req.body.ticketId,
+        userId: req.userId
+    }).then(message =>{
+        if(req.body.pictures){
+            if(Array.isArray(req.body.pictures)) {
+                // images multiples
+                console.log('multiple');
+                Librarycategories.create({
+                    library_category_label: 'Tickets',
+                    library_category_table_name: 'Ticketmessages',
+                    library_category_table_id: message.id
+                }).then(Librarycategories => {
+                    let allPictures = [];
+                    for (let i in req.body.pictures) {
+                        const picture = {
+                            library_media_name: req.body.pictures[i].name,
+                            library_media_resource: 'client',
+                            library_media_extension: 'jpg',
+                            library_media_type: 'image/jpeg',
+                            librarycategoryId: Librarycategories.id,
+                            userId: req.userId
+                        };
+                        allPictures.push(picture);
+                    }
+                    Libraries.bulkCreate(allPictures, {returning: true}).then(allPictures =>{
+                        res.send({message: message, allPictures: allPictures});
+                    }).catch(function(error){
+                        res.status(500).json(error);
+                    });
+                }).catch(function(error){
+                    res.status(500).json(error);
+                });
+            }else{
+                // image unique
+                Librarycategories.create({
+                    library_category_label: 'Tickets',
+                    library_category_table_name: 'Ticketmessages',
+                    library_category_table_id: message.id
+                }).then(Librarycategories =>{
+                    Libraries.create({
+                        library_media_name: req.body.pictures.name,
+                        library_media_resource: 'client',
+                        library_media_extension: 'jpg',
+                        library_media_type: 'image/jpeg',
+                        librarycategoryId: Librarycategories.id,
+                        userId: req.userId
+                    }).then(libraries =>{
+                        res.status(200).send({message: message, libraries: libraries});
+                    }).catch(function(error){
+                        res.status(500).json(error);
+                    });
+                }).catch(function(error){
+                    res.status(500).json(error);
+                });
+            }
+        }else {
+            res.status(200).send({message: message});
+        }
+    }).catch(err=>{
+        res.status(500).json({
+            "description": "Can not access",
+            "error": err
+        });
+    });
+};
+
+exports.updateTicket = (req, res)=>{
+    const id = req.params.ticketId;
+    if(req.body.action){
+        switch(req.body.action){
+            case 'close':
+                Tickets.update({
+                    status: 3
+                },{ where: {id: id}
+                }).then(ticket =>{
+                    res.status(200).send({id: id});
+                });
+                break;
+            case 'plan':
+                Tickets.update({
+
+                });
+        }
+    }else{
+        res.status(500).json({message: 'Needs an action to perform'})
+    }
+
+};
+
+exports.getAll = (req, res)=>{
+    Tickets.findAll({
+        where:{userId: req.userId},
+        include:[{model: Realties}]
+    }).then(tickets =>{
+        res.status(200).send(tickets);
+    }).catch(err =>{
         res.status(500).json({
             "description": "Can not access",
             "error": err

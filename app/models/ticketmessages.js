@@ -14,11 +14,19 @@ module.exports = (sequelize, Sequelize) => {
     }, {
         timestamp: true,
         logging: console.log,
-        scopes: {}
+        scopes:{
+            withAll:{
+                include: [
+                    {
+                        model: sequelize.models.users
+                    }
+                ]
+            }
+        }
     });
     ticketmessages.associate = function(models) {
-        models.ticketmessages.belongsTo(models.tickets);
         models.ticketmessages.belongsTo(models.users);
+        models.ticketmessages.belongsTo(models.tickets);
         models.ticketmessages.hasMany(models.librarycategories, {
             foreignKey: 'library_category_table_id',
             foreignKeyConstraint: false,

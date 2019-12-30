@@ -17,7 +17,7 @@ module.exports = (sequelize, Sequelize) => {
         },
         status:{
             type:Sequelize.INTEGER,
-            defaultValue: 0,// 0: en attente, 1: planifié, 2: effectué, 3: fermé, 4: annulé
+            defaultValue: 0// 0: en attente, 1: planifié, 2: effectué, 3: fermé, 4: annulé
         },
         planned:{
             type: Sequelize.DATE
@@ -37,17 +37,6 @@ module.exports = (sequelize, Sequelize) => {
                                 required: true
                             }
                         ]
-                    },{
-                        model: sequelize.models.ticketmessages,
-                        include:[
-                            {
-                                model: sequelize.models.librarycategories,
-                                required: false
-                            }
-                        ]
-
-                    },{
-                        model: sequelize.models.partners
                     }
                 ]
             }
@@ -56,6 +45,7 @@ module.exports = (sequelize, Sequelize) => {
     tickets.associate = function(models) {
         models.tickets.belongsTo(models.realties);
         models.tickets.belongsTo(models.partners);
+        models.tickets.belongsTo(models.users);
         models.tickets.hasMany(models.ticketmessages);
     };
     return tickets;
