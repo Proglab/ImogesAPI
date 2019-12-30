@@ -189,7 +189,7 @@ exports.updateTicket = (req, res)=>{
 
 exports.getAll = (req, res)=>{
     Tickets.findAll({
-        where:{userId: req.userId},
+        where:{userId: req.userId},// Changer pour admin et partenaire
         include:[{model: Realties}]
     }).then(tickets =>{
         res.status(200).send(tickets);
