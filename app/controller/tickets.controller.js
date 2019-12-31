@@ -6,6 +6,7 @@ const Users = db.users;
 const Libraries = db.libraries;
 const Partners = db.partners;
 const Realties = db.realties;
+const TMClient = require('textmagic-rest-client');
 
 exports.create = (req, res) => {
     //console.log(req.body);
@@ -43,7 +44,8 @@ exports.create = (req, res) => {
                             allPictures.push(picture);
                         }
                         Libraries.bulkCreate(allPictures, {returning: true}).then(allPictures =>{
-                            res.send({ticket: ticket, message: message, allPictures: allPictures});
+                            sendSmsToPartner(ticket.partnerId, ticket.id);
+                            res.status(200).send({ticket: ticket, message: message, allPictures: allPictures});
                         }).catch(function(error){
                             res.status(500).json(error);
                         });
@@ -63,13 +65,15 @@ exports.create = (req, res) => {
                             librarycategoryId: Librarycategories.id,
                             userId: req.userId
                         }).then(libraries =>{
-                            res.send({ticket: ticket, message: message, libraries: libraries});
+                            sendSmsToPartner(ticket.partnerId, ticket.id);
+                            res.status(200).send({ticket: ticket, message: message, libraries: libraries});
                         }).catch(function(error){
                             res.status(500).json(error);
                         });
                     });
                 }
             }else{
+                sendSmsToPartner(ticket.partnerId, ticket.id);
                 res.status(200).send({ticket: ticket, message: message});
             }
         });
@@ -200,3 +204,22 @@ exports.getAll = (req, res)=>{
         });
     });
 };
+
+function sendSmsToPartner(partnerId, ticketId){
+    if (process.env.NODE_ENV === "production") {
+        Partners.findByPk(partnerId, {include: Users}).then(partner => {
+            const firstname = partner.user.firstname;
+            const mobile = "32" + partner.user.mobile.substr(1); // E.164 format
+            const targetUrl = "https://imoges.be?ticketId=" + ticketId;
+            const smsText = "Bonjour " + firstname + ", vous avez un ticket SAV sur Imoges: " + targetUrl;
+            const c = new TMClient(process.env.TEXT_MAGIC_USER, process.env.TEXT_MAGIC_KEY);
+
+            c.Messages.send({text: smsText, phones: mobile}, function (err, res) {
+                console.log('Messages.send()', err, res);
+            });
+
+        }).catch(err => {
+            console.log(err);
+        });
+    }
+}
