@@ -47,7 +47,7 @@ exports.create = (req, res) => {
                             allPictures.push(picture);
                         }
                         Libraries.bulkCreate(allPictures, {returning: true}).then(allPictures =>{
-                            sendToPartner(ticket.partnerId, ticket.id, ticket.createdAt, ticket.partnerId);
+                            sendToPartner(ticket.partnerId, ticket.id, ticket.createdAt, ticket.realtyId);
                             res.status(200).send({ticket: ticket, message: message, allPictures: allPictures});
                         }).catch(function(error){
                             res.status(500).json(error);
@@ -68,7 +68,7 @@ exports.create = (req, res) => {
                             librarycategoryId: Librarycategories.id,
                             userId: req.userId
                         }).then(libraries =>{
-                            sendToPartner(ticket.partnerId, ticket.id, ticket.createdAt, ticket.partnerId);
+                            sendToPartner(ticket.partnerId, ticket.id, ticket.createdAt, ticket.realtyId);
                             res.status(200).send({ticket: ticket, message: message, libraries: libraries});
                         }).catch(function(error){
                             res.status(500).json(error);
@@ -76,7 +76,7 @@ exports.create = (req, res) => {
                     });
                 }
             }else{
-                sendToPartner(ticket.partnerId, ticket.id, ticket.createdAt, ticket.partnerId);
+                sendToPartner(ticket.partnerId, ticket.id, ticket.createdAt, ticket.realtyId);
                 res.status(200).send({ticket: ticket, message: message});
             }
         });
