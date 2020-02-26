@@ -10,3 +10,13 @@ exports.findAll = (req, res) => {
         res.send(partners);
     });
 };
+
+exports.findOne = (req, res) => {
+    Partners.findOne({where:{userId: req.params.partnerId}}).then(partner => {
+        // Send all customers to Client
+        console.log(partner);
+        res.send(partner);
+    }).catch(err => {
+        res.status(500).send('Error -> ' + err);
+    });
+};

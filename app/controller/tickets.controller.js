@@ -185,8 +185,21 @@ exports.updateTicket = (req, res)=>{
                 break;
             case 'plan':
                 Tickets.update({
-
+                    planned: req.body.date,
+                    status: 1
+                },{ where: {id: id}
+                }).then(ticket =>{
+                    res.status(200).send({id: id});
                 });
+                break;
+            case 'done':
+                Tickets.update({
+                    status: 2
+                },{ where: {id: id}
+                }).then(ticket =>{
+                    res.status(200).send({id: id});
+                });
+                break;
         }
     }else{
         res.status(500).json({message: 'Needs an action to perform'})
@@ -195,8 +208,23 @@ exports.updateTicket = (req, res)=>{
 };
 
 exports.getAll = (req, res)=>{
+    let role = req.query.role;
+    let domain = req.query.domain;
+    let where = {};
+    if(domain === 'partner'){
+        if(role === 'PARTNER' && req.isPartner){
+            where = {partnerId:req.query.partnerId};
+        }else if(role === 'ADMIN' && req.isAdmin){
+            where = {};
+        }else{
+            where = {userId: req.userId};
+        }
+    }else{
+        where = {userId: req.userId};
+    }
+    console.log(req.isPartner);
     Tickets.findAll({
-        where:{userId: req.userId},// Changer pour admin et partenaire
+        where: where,
         include:[{model: Realties}]
     }).then(tickets =>{
         res.status(200).send(tickets);

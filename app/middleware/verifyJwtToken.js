@@ -50,12 +50,10 @@ isAdmin = (req, res, next) => {
                     console.log(roles[i].name);
                     if(roles[i].name.toUpperCase() === "ADMIN"){
                         next();
-                        return;
                     }
                 }
 
                 res.status(403).send("Require Admin Role!");
-                return;
             })
         })
 };
@@ -82,12 +80,10 @@ isPmOrAdmin = (req, res, next) => {
                 for(let i=0; i<roles.length; i++){
                     if(roles[i].name.toUpperCase() === "USER"){
                         next();
-                        return;
                     }
 
                     if(roles[i].name.toUpperCase() === "ADMIN"){
                         next();
-                        return;
                     }
                 }
 

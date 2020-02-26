@@ -7,5 +7,6 @@ module.exports = function(app) {
 
     // Retrieve all Customer
     app.get('/api/partners', [allowCrossOrigin], partners.findAll);
+    app.get('/api/partner/:partnerId', [allowCrossOrigin], partners.findOne);
 
 };
