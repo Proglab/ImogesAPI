@@ -10,6 +10,8 @@ const moment = require('moment');
 const TMClient = require('textmagic-rest-client');
 const mailjet = require ('node-mailjet')
     .connect(process.env.MAILJET_KEY,process.env.MAILJET_SECRET);
+const smsOnMessage = false;
+const smsOnStatusChange = false;
 
 exports.create = (req, res) => {
     //console.log(req.body);
@@ -130,6 +132,7 @@ exports.createMessage = (req, res) =>{
                         allPictures.push(picture);
                     }
                     Libraries.bulkCreate(allPictures, {returning: true}).then(allPictures =>{
+                        senMessagedMail(req.userId, req.body.ticketId, req.body.realtyId);
                         res.send({message: message, allPictures: allPictures});
                     }).catch(function(error){
                         res.status(500).json(error);
@@ -152,6 +155,7 @@ exports.createMessage = (req, res) =>{
                         librarycategoryId: Librarycategories.id,
                         userId: req.userId
                     }).then(libraries =>{
+                        senMessagedMail(req.userId, req.body.ticketId, req.body.realtyId);
                         res.status(200).send({message: message, libraries: libraries});
                     }).catch(function(error){
                         res.status(500).json(error);
@@ -161,6 +165,7 @@ exports.createMessage = (req, res) =>{
                 });
             }
         }else {
+            senMessagedMail(req.userId, req.body.ticketId, req.body.realtyId);
             res.status(200).send({message: message});
         }
     }).catch(err=>{
@@ -189,6 +194,7 @@ exports.updateTicket = (req, res)=>{
                     status: 1
                 },{ where: {id: id}
                 }).then(ticket =>{
+                    sendStatusMail('plan', id, req.body.realtyId);
                     res.status(200).send({id: id});
                 });
                 break;
@@ -197,6 +203,7 @@ exports.updateTicket = (req, res)=>{
                     status: 2
                 },{ where: {id: id}
                 }).then(ticket =>{
+                    sendStatusMail('done', id, req.body.realtyId);
                     res.status(200).send({id: id});
                 });
                 break;
@@ -236,11 +243,45 @@ exports.getAll = (req, res)=>{
     });
 };
 
+function senMessagedMail(userId, ticketId, realtyId){
+    Tickets.findByPk(ticketId).then((ticket) =>{
+        let recipientType = userId === ticket.userId ? 'partner' : 'client';
+        let userData;
+        switch(recipientType){
+            case 'client':
+                Users.findByPk(ticket.userId).then((user) =>{
+                    userData = user;
+                    sendToMailjet('message', userData, ticket, recipientType, realtyId, smsOnMessage);
+                });
+                break;
+            case 'partner':
+                Partners.findOne({where:{id: ticket.partnerId}, include: Users}).then((partner) =>{
+                    userData = partner.user;
+                    sendToMailjet('message', userData, ticket, recipientType, realtyId, smsOnMessage);
+                });
+                break;
+        }
+    });
+}
+
+function sendStatusMail(type, ticketId, realtyId){
+    Tickets.findByPk(ticketId, {include: Users}).then((ticket) =>{
+        switch(type){
+            case 'plan':
+                sendToMailjet('status_plan', ticket.user, ticket, 'client', realtyId, smsOnStatusChange);
+                break;
+            case 'done':
+                sendToMailjet('status_done', ticket.user, ticket, 'client', realtyId, smsOnStatusChange);
+                break;
+        }
+    })
+}
+
 function sendToPartner(partnerId, ticketId, ticketDate, realtyId){
     Partners.findByPk(partnerId, {include: Users}).then(partner => {
         const ticketRef = moment(ticketDate).format('YYYY') + '-' + moment(ticketDate).format('MM') + '-' + realtyId + '-' + ticketId ;
         const firstname = partner.user.firstname;
-        const targetUrl = "https://imoges.be?ticketId=" + ticketId;
+        const targetUrl = "https://partners.imoges.be?ticketId=" + ticketId;
         const sendName = partner.user.company_name ? partner.user.company_name : partner.user.firstname + " " + partner.user.lastname;
 
         // Envoi du mail
@@ -272,11 +313,11 @@ function sendToPartner(partnerId, ticketId, ticketDate, realtyId){
         request
             .then((result) => {
                 console.log(result.body);
-                sendSMS(partner.user.mobile, firstname, targetUrl);
+                sendSMS(partner.user.mobile, "Bonjour " + firstname + ", vous avez un ticket SAV sur Imoges: " + targetUrl);
             })
             .catch((err) => {
                 console.log(err.statusCode);
-                sendSMS(partner.user.mobile, firstname, targetUrl);
+                sendSMS(partner.user.mobile, "Bonjour " + firstname + ", vous avez un ticket SAV sur Imoges: " + targetUrl);
             });
 
     }).catch(err => {
@@ -284,14 +325,93 @@ function sendToPartner(partnerId, ticketId, ticketDate, realtyId){
     });
 }
 
+function sendToMailjet(type, user, ticket, recipientType, realtyId, sms){
+    const ticketRef = moment(ticket.createdAt).format('YYYY') + '-' + moment(ticket.createdAt).format('MM') + '-' + realtyId + '-' + ticket.id ;
+    let sendName;
+    let targetUrl;
+    let message;
+    let buttonLabel;
+    let smsText;
 
-function sendSMS(mobile, firstname, targetUrl){
+    switch(recipientType){
+        case 'client':
+            sendName = user.firstname + " " + user.lastname;
+            targetUrl = 'https://imoges.be/account/ticket?id=' + ticket.id;
+            break;
+        case 'partner':
+            sendName = user.company_name ? user.company_name : user.firstname + " " + user.lastname;
+            targetUrl = 'https://partners.imoges.be/account/ticket?id=' + ticket.id;
+            break;
+    }
+
+    switch (type){
+        case 'message':
+            message = "Vous avez reçu un nouveau message concernant la demande d'intervention <b>" + ticketRef + "</b>";
+            buttonLabel = "Voir le message";
+            smsText = "Bonjour " + user.firstname + ", vous avez un nouveau message sur le SAV Imoges: " + targetUrl;
+            break;
+        case 'status_plan':
+            message = "Une date d'intervention a été planifiée pour votre demande <b>" + ticketRef + "</b>";
+            buttonLabel = "Voir le ticket";
+            smsText = "Bonjour " + user.firstname + ", Une date d'intervention a été planifiée pour votre demande Imoges: " + targetUrl;
+            break;
+        case 'status_done':
+            message = "Notre technicien a marqué la demande <b>" + ticketRef + "</b> comme prestée.<br>";
+            message += "Si votre problème est résolu, merci de cloturer votre demande sur notre site web";
+            buttonLabel = "Voir le ticket";
+            smsText = "Bonjour " + user.firstname + ", Imoges - Intervention terminée: " + targetUrl;
+            break;
+    }
+
+    const request = mailjet
+        .post("send", {'version': 'v3.1'})
+        .request({
+            "Messages":[
+                {
+                    "From": {
+                        "Email": "info@absolute-fx.com",
+                        "Name": "Imoges sprl"
+                    },
+                    "To": [
+                        {
+                            "Email": user.email,
+                            "Name": sendName
+                        }
+                    ],
+                    "TemplateID": 1259452,
+                    "TemplateLanguage": true,
+                    "Subject": "SAV Imoges: Ticket " + ticketRef,
+                    "Variables": {
+                        "firstname": user.firstname,
+                        "validationLink": targetUrl,
+                        "buttonLabel": buttonLabel,
+                        "message": message
+                    }
+                }
+            ]
+        });
+    request
+        .then((result) => {
+            console.log(result.body);
+            if(sms){
+                if(user.mobile) sendSMS(user.mobile, smsText);
+            }
+        })
+        .catch((err) => {
+            console.log(err.statusCode);
+            if(sms){
+                if(user.mobile) sendSMS(user.mobile, smsText);
+            }
+        });
+}
+
+function sendSMS(mobile, message){
     // Envoi SMS (seulement en production)
     if (process.env.NODE_ENV === "production") {
         mobile = "32" + mobile.substr(1); // E.164 format
-        const smsText = "Bonjour " + firstname + ", vous avez un ticket SAV sur Imoges: " + targetUrl;
+        //const smsText = "Bonjour " + firstname + ", vous avez un ticket SAV sur Imoges: " + targetUrl;
         const c = new TMClient(process.env.TEXT_MAGIC_USER, process.env.TEXT_MAGIC_KEY);
-        c.Messages.send({text: smsText, phones: mobile}, function (err, res) {
+        c.Messages.send({text: message, phones: mobile}, function (err, res) {
             console.log('Messages.send()', err, res);
         });
     }
