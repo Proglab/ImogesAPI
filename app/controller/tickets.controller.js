@@ -11,7 +11,7 @@ const TMClient = require('textmagic-rest-client');
 const mailjet = require ('node-mailjet')
     .connect(process.env.MAILJET_KEY,process.env.MAILJET_SECRET);
 const smsOnMessage = false;
-const smsOnStatusChange = false;
+const smsOnStatusChange = true;
 
 exports.create = (req, res) => {
     //console.log(req.body);
@@ -271,7 +271,7 @@ function sendStatusMail(type, ticketId, realtyId){
                 sendToMailjet('status_plan', ticket.user, ticket, 'client', realtyId, smsOnStatusChange);
                 break;
             case 'done':
-                sendToMailjet('status_done', ticket.user, ticket, 'client', realtyId, smsOnStatusChange);
+                sendToMailjet('status_done', ticket.user, ticket, 'client', realtyId, false);
                 break;
         }
     })
@@ -313,11 +313,11 @@ function sendToPartner(partnerId, ticketId, ticketDate, realtyId){
         request
             .then((result) => {
                 console.log(result.body);
-                if(partner.user.mobile) sendSMS(partner.user.mobile, "Bonjour " + firstname + ", vous avez un ticket SAV sur Imoges: " + targetUrl);
+                if(partner.user.mobile) sendSMS(partner.user.mobile, "Bonjour " + firstname + ", vous avez une demande de SAV sur Imoges: " + targetUrl);
             })
             .catch((err) => {
                 console.log(err.statusCode);
-                if(partner.user.mobile) sendSMS(partner.user.mobile, "Bonjour " + firstname + ", vous avez un ticket SAV sur Imoges: " + targetUrl);
+                if(partner.user.mobile) sendSMS(partner.user.mobile, "Bonjour " + firstname + ", vous avez une demande de SAV sur Imoges: " + targetUrl);
             });
 
     }).catch(err => {
