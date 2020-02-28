@@ -13,6 +13,10 @@ module.exports = (sequelize, Sequelize) => {
         },
         description:{
             type: Sequelize.TEXT
+        },
+        active:{
+            type: Sequelize.INTEGER,
+            defaultValue: 0
         }
     }, {
         timestamp: true,

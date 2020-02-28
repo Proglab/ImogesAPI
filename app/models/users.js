@@ -30,6 +30,7 @@ module.exports = (sequelize, Sequelize) => {
     email: {
       type: Sequelize.STRING,
       allowNull: false,
+      unique: true,
       validate: {
         len: {
           args: [2, 255],
@@ -41,6 +42,7 @@ module.exports = (sequelize, Sequelize) => {
     username: {
       type: Sequelize.STRING,
       allowNull: false,
+      unique: true,
       validate: {
         len: {
           args: [2, 255],
@@ -83,6 +85,26 @@ module.exports = (sequelize, Sequelize) => {
         }
       }
     },
+      mobile2: {
+          type:Sequelize.STRING(16),
+          allowNull: true,
+          validate:{
+              len:{
+                  args: [9, 20],
+                  msg: 'tooshort_or_toobig'
+              }
+          }
+      },
+      phone: {
+          type:Sequelize.STRING(16),
+          allowNull: true,
+          validate:{
+              len:{
+                  args: [9, 20],
+                  msg: 'tooshort_or_toobig'
+              }
+          }
+      },
     address: {
       type: Sequelize.STRING,
       allowNull: true

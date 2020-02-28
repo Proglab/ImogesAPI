@@ -313,11 +313,11 @@ function sendToPartner(partnerId, ticketId, ticketDate, realtyId){
         request
             .then((result) => {
                 console.log(result.body);
-                sendSMS(partner.user.mobile, "Bonjour " + firstname + ", vous avez un ticket SAV sur Imoges: " + targetUrl);
+                if(partner.user.mobile) sendSMS(partner.user.mobile, "Bonjour " + firstname + ", vous avez un ticket SAV sur Imoges: " + targetUrl);
             })
             .catch((err) => {
                 console.log(err.statusCode);
-                sendSMS(partner.user.mobile, "Bonjour " + firstname + ", vous avez un ticket SAV sur Imoges: " + targetUrl);
+                if(partner.user.mobile) sendSMS(partner.user.mobile, "Bonjour " + firstname + ", vous avez un ticket SAV sur Imoges: " + targetUrl);
             });
 
     }).catch(err => {
