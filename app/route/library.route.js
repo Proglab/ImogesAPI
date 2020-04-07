@@ -28,4 +28,5 @@ module.exports = function(app) {
 
     // Delete a Customer with Id
     app.delete('/api/medias/:mediaId', medias.delete);
+
 };

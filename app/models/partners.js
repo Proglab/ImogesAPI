@@ -27,6 +27,7 @@ module.exports = (sequelize, Sequelize) => {
         models.partners.belongsToMany(models.projects, { through: 'project_partners' } );
         models.partners.hasOne(models.tickets);
         models.partners.belongsTo(models.users);
+        models.partners.belongsTo(models.supportcategories);
     };
     return partners
 };

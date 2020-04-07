@@ -12,18 +12,36 @@ exports.create = (req, res, next) => {
     res.send(file);
 };
 
-// FETCH all Customers
+// FETCH all libraries
 exports.findAll = (req, res) => {
-    res.send('tous les medias');
+    let sqlReq = {};
+    if(req.query){
+        if (req.query.type) {
+            sqlReq.where = {library_media_type: req.query.type};
+        }
+        let orderBy = [];
+        if(req.query.orderField){
+            orderBy.push([]);
+            orderBy[0].push(req.query.orderField);
+            if(req.query.orderDirection){
+                orderBy[0].push(req.query.orderDirection);
+            }
+            sqlReq.order = orderBy;
+            console.log(sqlReq);
+        }
+    }
+    Libraries.findAll(sqlReq).then(media =>{
+        res.send(media);
+    });
 };
 
-// Find a Customer by Id
+// Find a library by Id
 exports.findById = (req, res) => {
     const id = req.params.mediaId;
     res.send('find media by id :' + id.toString());
 };
 
-// Delete a Customer by Id
+// Delete a library by Id
 exports.delete = (req, res) => {
     const id = req.params.mediaId;
     res.send('delete media by id :' + id.toString());
