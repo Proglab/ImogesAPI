@@ -49,7 +49,7 @@ exports.create = (req, res) => {
                             allPictures.push(picture);
                         }
                         Libraries.bulkCreate(allPictures, {returning: true}).then(allPictures =>{
-                            sendToPartner(ticket.partnerId, ticket.id, ticket.createdAt, ticket.realtyId);
+                            sendToPartner(ticket.partnerId, ticket.id, ticket.createdAt, ticket.realtyId, req.userId, req.body.priority);
                             res.status(200).send({ticket: ticket, message: message, allPictures: allPictures});
                         }).catch(function(error){
                             res.status(500).json(error);
@@ -70,7 +70,7 @@ exports.create = (req, res) => {
                             librarycategoryId: Librarycategories.id,
                             userId: req.userId
                         }).then(libraries =>{
-                            sendToPartner(ticket.partnerId, ticket.id, ticket.createdAt, ticket.realtyId);
+                            sendToPartner(ticket.partnerId, ticket.id, ticket.createdAt, ticket.realtyId, req.userId, req.body.priority);
                             res.status(200).send({ticket: ticket, message: message, libraries: libraries});
                         }).catch(function(error){
                             res.status(500).json(error);
@@ -78,7 +78,7 @@ exports.create = (req, res) => {
                     });
                 }
             }else{
-                sendToPartner(ticket.partnerId, ticket.id, ticket.createdAt, ticket.realtyId);
+                sendToPartner(ticket.partnerId, ticket.id, ticket.createdAt, ticket.realtyId, req.userId, req.body.priority);
                 res.status(200).send({ticket: ticket, message: message});
             }
         });
@@ -277,14 +277,14 @@ function sendStatusMail(type, ticketId, realtyId){
     })
 }
 
-function sendToPartner(partnerId, ticketId, ticketDate, realtyId){
+function sendToPartner(partnerId, ticketId, ticketDate, realtyId, userId, priority){
     Partners.findByPk(partnerId, {include: Users}).then(partner => {
         const ticketRef = moment(ticketDate).format('YYYY') + '-' + moment(ticketDate).format('MM') + '-' + realtyId + '-' + ticketId ;
         const firstname = partner.user.firstname;
         const targetUrl = "https://partners.imoges.be?ticketId=" + ticketId;
         const sendName = partner.user.company_name ? partner.user.company_name : partner.user.firstname + " " + partner.user.lastname;
 
-        // Envoi du mail
+        // Envoi du mail partner
         const request = mailjet
             .post("send", {'version': 'v3.1'})
             .request({
@@ -313,12 +313,52 @@ function sendToPartner(partnerId, ticketId, ticketDate, realtyId){
         request
             .then((result) => {
                 console.log(result.body);
+                Users.findByPk(userId).then((user) =>{
+                    const client_firstname = user.firstname;
+                    const client_targetUrl = "https://imoges.be/account/ticket?id" + ticketId;
+
+                    const request_client = mailjet
+                        .post("send", {'version': 'v3.1'})
+                        .request({
+                            "Messages":[
+                                {
+                                    "From": {
+                                        "Email": "info@absolute-fx.com",
+                                        "Name": "Imoges sprl"
+                                    },
+                                    "To": [
+                                        {
+                                            "Email": user.email,
+                                            "Name": client_firstname
+                                        }
+                                    ],
+                                    "TemplateID": 1354699,
+                                    "TemplateLanguage": true,
+                                    "Subject": "SAV Imoges: Ticket " + ticketRef,
+                                    "Variables": {
+                                        "firstname": client_firstname,
+                                        "validationLink": client_targetUrl,
+                                        "urgentMessage": formatPartnerInfos(priority, partner)
+                                    }
+                                }
+                            ]
+                        });
+                    request_client.then((result)=>{
+
+                    }).catch((err) => {
+
+                    });
+
+                });
+
                 if(partner.user.mobile) sendSMS(partner.user.mobile, "Bonjour " + firstname + ", vous avez une demande de SAV sur Imoges: " + targetUrl);
             })
             .catch((err) => {
                 console.log(err.statusCode);
                 if(partner.user.mobile) sendSMS(partner.user.mobile, "Bonjour " + firstname + ", vous avez une demande de SAV sur Imoges: " + targetUrl);
             });
+
+        // Client
 
     }).catch(err => {
         console.log(err);
@@ -415,4 +455,22 @@ function sendSMS(mobile, message){
             console.log('Messages.send()', err, res);
         });
     }
+}
+
+function formatPartnerInfos(priority, partner){
+    let partnerInfos = '';
+    if(priority === '2'){
+        partnerInfos += 'Vous avez demandé une intervention <b>urgente</b>. Le prestataire a été averti par mail et sms. Cependant, afin de résoudre votre problème le plus rapidement possible, vous pouvez directement contacter ce dernier au ';
+        partnerInfos += '<b>' + partner.user.mobile + '</b>';
+        if(partner.user.mobile2){
+            partnerInfos += ' ou au <b>' + partner.user.mobile2 + '</b>';
+        }
+        if(partner.user.phone){
+            partnerInfos += ' ou sur le téléphone fixe <b>' + partner.user.phone + '</b>';
+        }
+        partnerInfos += '.';
+    }
+    console.log('Priority => ' + priority);
+    console.log('Message => ' + partnerInfos);
+    return partnerInfos;
 }
