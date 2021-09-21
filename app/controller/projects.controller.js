@@ -91,3 +91,32 @@ exports.getOne = (req, res) => {
         });
     });
 };
+
+exports.create = (req, res) => {
+    return Projects.create(req.body, {
+        include: [{
+            association: Projects.projecttypeId
+        }]
+    })
+      .then((project) => {
+          return project.reload();
+      })
+      .then((project) => {
+          res.status(201).send({ success: true, project });
+      })
+      .catch((error) => {
+          res.status(400).send({ success: false, error });
+      });
+};
+
+exports.update = (req, res) => {
+    const { id } = req.params;
+    return Projects.update(req.body, {
+        where: { id: id}
+    }).then(() => {
+        res.status(200).send({ success: true });
+    })
+      .catch((error) => {
+          res.status(500).send({success: false, error });
+      });
+}

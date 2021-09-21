@@ -1,5 +1,6 @@
 const allowCrossOrigin = require('./../middleware/allowCrossOrigin');
 const authJwt = require('./../middleware/verifyJwtToken');
+const users = require("../controller/users.controller.js");
 
 module.exports = function(app) {
 
@@ -12,6 +13,9 @@ module.exports = function(app) {
     // Retrieve all Customer
     app.get('/api/users', users.findAll);
 
+    // Retrieve customer by role
+    app.get('/api/user', users.findByRole);
+
     // validate user from mail
     app.put('/api/users/validate', [allowCrossOrigin, authJwt.verifyToken], users.validate);
 
@@ -20,6 +24,10 @@ module.exports = function(app) {
 
     // Update a Customer with Id
     app.put('/api/users/:customerId', [allowCrossOrigin, authJwt.verifyToken],users.update);
+
+    // delete realty from user
+    app.delete('/api/users/realty', [allowCrossOrigin, authJwt.verifyToken],users.deleteRealty);
+    app.post('/api/users/realty', [allowCrossOrigin, authJwt.verifyToken],users.addRealty);
 
     // Delete a Customer with Id
     app.delete('/api/users/:customerId', users.delete);
