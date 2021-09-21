@@ -177,11 +177,13 @@ module.exports = (sequelize, DataTypes) => {
       }
     }
   });
+
   projects.associate = function(models) {
     models.projects.belongsToMany(models.phases, {through: 'project_phases', foreignKey: 'project_id'});
     models.projects.hasMany(models.realties);
     models.projects.belongsTo(models.phases, {foreignKey: 'project_actual_phase', targetKey: 'id', as: 'current_phase'});
-    models.projects.belongsTo(models.projecttypes);
+    // models.projects.belongsTo(models.projecttypes);
+    projects.projecttypeId = projects.belongsTo(models.projecttypes);
     models.projects.belongsToMany(models.partners, { through: 'project_partners' } );
     models.projects.hasMany(models.librarycategories, {
       foreignKey: 'library_category_table_id',

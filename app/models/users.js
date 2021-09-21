@@ -152,23 +152,24 @@ module.exports = (sequelize, Sequelize) => {
           withRealties:{
               include: [{
                   model: sequelize.models.realties,
-                  required : true,
+                  required : false,
                   include:[
                       {
                           model: sequelize.models.projects,
                           required: true,
-                          include:[
-                              {
-                                  model: sequelize.models.partners
-                              }
-                          ]
                       }
                   ]
                 }
               ]
-          }
-      }
+          },
+          withRole(value) {
+            return {
+              include: [{ model: sequelize.models.roles, where: { id: value }}]
+            }
+          },
+      },
   });
+
   users.associate = function(models) {
     models.users.hasMany(models.ticketmessages);
     models.users.belongsToMany(models.roles, { through: 'user_roles', foreignKey: 'userId', otherKey: 'roleId'});

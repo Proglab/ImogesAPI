@@ -6,5 +6,6 @@ module.exports = function(app) {
 
     app.get('/api/projects', [allowCrossOrigin], controller.getAll);
     app.get('/api/projects/:id', [allowCrossOrigin], controller.getOne);
-
+    app.post('/api/projects', [allowCrossOrigin, authJwt.verifyToken], controller.create);
+    app.put('/api/projects/:id', [allowCrossOrigin, authJwt.verifyToken], controller.update);
 };
