@@ -157,6 +157,13 @@ module.exports = (sequelize, Sequelize) => {
                       {
                           model: sequelize.models.projects,
                           required: true,
+                          include:[
+                              {
+                                  model:sequelize.models.partners,
+                                  required: true,
+                                  include:sequelize.models.users,
+                              }
+                          ]
                       }
                   ]
                 }

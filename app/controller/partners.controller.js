@@ -1,5 +1,6 @@
 const db = require('../models');
 const Partners = db.partners;
+const Users = db.users;
 const bcrypt = require('bcryptjs');
 
 
@@ -12,9 +13,17 @@ exports.findAll = (req, res) => {
 };
 
 exports.findOne = (req, res) => {
-    Partners.findOne({where:{userId: req.params.partnerId}}).then(partner => {
+    /*Partners.findOne({where:{userId: req.params.partnerId}}, {include:Users}).then(partner => {
         // Send all customers to Client
-        console.log(partner);
+        console.log('--> PARTNER', partner);
+        res.send(partner);
+    }).catch(err => {
+        res.status(500).send('Error -> ' + err);
+    });*/
+
+    Partners.findByPk(req.params.partnerId, {include:Users}).then(partner => {
+        // Send all customers to Client
+        console.log('--> PARTNER', partner);
         res.send(partner);
     }).catch(err => {
         res.status(500).send('Error -> ' + err);
