@@ -4,7 +4,7 @@ if (process.env.NODE_ENV === "development" || process.env.NODE_ENV === undefined
     dotenv.config();
     websiteUrl = "http://imoges.loc:3000/"
 }else{
-    websiteUrl = "https:imoges.be/";
+    websiteUrl = "https://imoges.be/";
 }
 
 module.exports = {
